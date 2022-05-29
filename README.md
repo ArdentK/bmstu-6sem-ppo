@@ -64,9 +64,9 @@ left to right direction
 
 ```
 
-![uscasee](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ArdentK/bmstu-6sem-ppo/blob/main/docs/assets/usecase.iuml)
+![usecase](/svg/nLL1Ji9G4Dtt57zf5ro0XU4WRWXK9K58eEmBY2uWgT656nD5FK1JQLg1bYlClv5lVej4Kh2L4ZTj__JDcpVlpsyhNRFQCNjNJT7h6hLgrz2qfd5k2hCjEesBIrFK6nsZPZRQBKqhqmD5iYy7Sb8MfTAfEA4xSkK0GOi2yicHDnH8MsVeb5OS1xXFI_8eNASy0nofO8INbg2L2bo3OS6vELAnzCYNGoHE8CDXAUIAivO0A59lNGevHWxk0NtcegSvqXQCe1d8BMdlfzOEfaY4l2il9iomzbHmFb2X7CjHUgcVFYPKBwZ2cNDu4p3WkvedS0c1PodBk0u5UcRcUrO2lXdp-DnJmBE1UaivLYFmgdeCoPDMR76QzscuT1yv3SjROEU9Yoxg1tB4ZrkytAYUZVjlKvHHTAxvWJ-GCOCCUwzXMwX2AZ_nLd8tiG6RhXu1-m3540SSjAbJm-mKxIWWRPxOmYfiRxHJ8FjWiwc5ylRN6_OBPzxJUeZlgREb7KD3XkPsPUl753H5s4--g_ycuatHncTrlmYjOhJg-5D_0G00 "usecase")
 
-![use-case](docs/assets/usecase.svg)
+<!-- ![use-case](docs/assets/usecase.svg) -->
 
 ## ER-диаграмма сущностей
 
