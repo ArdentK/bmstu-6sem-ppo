@@ -64,6 +64,8 @@ left to right direction
 
 ```
 
+![uscasee](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ArdentK/bmstu-6sem-ppo/blob/main/docs/assets/usecase.iuml)
+
 ![use-case](docs/assets/usecase.svg)
 
 ## ER-диаграмма сущностей
