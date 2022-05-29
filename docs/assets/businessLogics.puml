@@ -1,0 +1,42 @@
+@startuml
+
+interface AuthService {
+    +auth()
+    +checkToken()
+}
+
+interface AthletService {
+    +allByGroupService()
+    +updateAthlet()
+    +updateFields()
+}
+
+interface CompetitionService {
+    +create()
+    +update()
+    +delete()
+    +filter()
+    +syncBattles()
+    +addBattle()
+}
+
+CompetitionService ..> CompetitionSyncService
+
+interface ResultsService {
+    +resultScore()
+    +resultsByGroupService()
+}
+
+interface GroupService {
+    +getAthlets()
+    +getTrainers()
+    +getReferees()
+    +getCompetitions()
+    +getMeta()
+}
+
+interface CompetitionSyncService {
+    +getCompetition()
+}
+
+@enduml
