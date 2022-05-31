@@ -5,9 +5,28 @@ interface AuthService {
     +checkToken()
 }
 
+interface AccountService {
+    +getAthlets()
+    +getTrainers()
+    +getReferees()
+    +getCompetitions()
+    +updateAccount()
+}
+
 interface AthletService {
-    +allByGroupService()
-    +updateAthlet()
+    +getOwnCompetitions()
+    +getResults()
+    +updateFields()
+}
+
+interface TrainerService {
+    +getOwnAthlets()
+    +getAthletResults()
+    +updateFields()
+}
+
+interface RefereeService {
+    +getOwnCompetitions()
     +updateFields()
 }
 
@@ -25,14 +44,6 @@ CompetitionService ..> CompetitionSyncService
 interface ResultsService {
     +resultScore()
     +resultsByGroupService()
-}
-
-interface GroupService {
-    +getAthlets()
-    +getTrainers()
-    +getReferees()
-    +getCompetitions()
-    +getMeta()
 }
 
 interface CompetitionSyncService {
