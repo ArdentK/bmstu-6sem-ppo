@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"html/template"
 	"net/http"
 	"time"
 
@@ -17,7 +18,7 @@ import (
 )
 
 const (
-	sessionName        = "ololololo"
+	sessionName        = "user"
 	ctxKeyUser  ctxKey = iota
 	ctxKeyRequestID
 )
@@ -34,14 +35,18 @@ type server struct {
 	logger       *logrus.Logger
 	store        store.Store
 	sessionStore sessions.Store
+	tmpl         *template.Template
 }
 
-func newServer(store store.Store, sessionStore sessions.Store) *server {
+func newServer(store store.Store, sessionStore sessions.Store, templatesPath string) *server {
+	templates := template.Must(template.ParseGlob(templatesPath))
+
 	s := &server{
 		router:       mux.NewRouter(),
 		logger:       logrus.New(),
 		store:        store,
 		sessionStore: sessionStore,
+		tmpl:         templates,
 	}
 
 	s.configureRouter()
@@ -58,12 +63,54 @@ func (s *server) configureRouter() {
 	s.router.Use(s.logRequest)
 	s.router.Use(handlers.CORS(handlers.AllowedOrigins([]string{"*"})))
 
+	s.router.HandleFunc("/", s.handleIndex()).Methods("GET")
 	s.router.HandleFunc("/users", s.handleUsersCreate()).Methods("POST")
 	s.router.HandleFunc("/sessions", s.handleSessionCreate()).Methods("POST")
+
+	s.router.HandleFunc("/competitions", s.handleCompetitionsIndex()).Methods("GET")
+	s.router.HandleFunc("/athlets", s.handleAthletsIndex()).Methods("GET")
 
 	private := s.router.PathPrefix("/private").Subrouter()
 	private.Use(s.authenticateUser)
 	private.HandleFunc("/whoami", s.handleWhoami()).Methods("GET")
+}
+
+func (s *server) handleCompetitionsIndex() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		elems, err := s.store.Competition().GetAll()
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+			return
+		}
+
+		err = s.tmpl.ExecuteTemplate(w, "index.html", struct {
+			Items []*model.Competition
+		}{
+			Items: elems,
+		})
+		if err != nil {
+			http.Error(w, `Template errror`, http.StatusInternalServerError)
+			return
+		}
+
+		s.respond(w, r, http.StatusOK, "competitions")
+	}
+}
+
+func (s *server) handleAthletsIndex() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		s.respond(w, r, http.StatusOK, "athlets")
+	}
+}
+
+func (s *server) handleIndex() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := s.tmpl.ExecuteTemplate(w, "login.html", nil)
+		if err != nil {
+			http.Error(w, `Template errror`, http.StatusInternalServerError)
+			return
+		}
+	}
 }
 
 func (s *server) setRequestID(next http.Handler) http.Handler {
@@ -160,14 +207,17 @@ func (s *server) handleSessionCreate() http.HandlerFunc {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
-	return func(w http.ResponseWriter, r *http.Request) {
-		req := &request{}
 
-		err := json.NewDecoder(r.Body).Decode(req)
-		if err != nil {
-			s.error(w, r, http.StatusBadRequest, err)
-			return
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &request{
+			Email:    r.FormValue("email"),
+			Password: r.FormValue("password"),
 		}
+		// err := json.NewDecoder(r.Body).Decode(req)
+		// if err != nil {
+		// 	s.error(w, r, http.StatusBadRequest, err)
+		// 	return
+		// }
 
 		u, err := s.store.User().FindByEmail(req.Email)
 		if err != nil || !u.ComparePassword(req.Password) {

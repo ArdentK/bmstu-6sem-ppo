@@ -4,12 +4,15 @@ import (
 	"database/sql"
 	"net/http"
 
+	"github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/mysqlstore"
 	"github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore"
 	"github.com/gorilla/sessions"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func Start(config *Config) error {
-	db, err := newDB(config.DatabaseURL)
+	db, err := newDB(config.Database, config.DatabaseURL)
 	if err != nil {
 		return nil
 	}
@@ -17,13 +20,19 @@ func Start(config *Config) error {
 
 	store := sqlstore.New(db)
 	sessionStore := sessions.NewCookieStore([]byte(config.SessionKey))
-	srv := newServer(store, sessionStore)
+	srv := newServer(store, sessionStore, "./templates/*")
+
+	if config.Database == "mysql" {
+		store2 := mysqlstore.New(db)
+		srv2 := newServer(store2, sessionStore, "./templates/*")
+		return http.ListenAndServe(config.BindAddr, srv2)
+	}
 
 	return http.ListenAndServe(config.BindAddr, srv)
 }
 
-func newDB(databaseURL string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", databaseURL)
+func newDB(database, databaseURL string) (*sql.DB, error) {
+	db, err := sql.Open(database, databaseURL)
 	if err != nil {
 		return nil, err
 	}

@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>apiserver: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/ArdentK/bmstu-6sem-ppo/internal/app/apiserver/apiserver.go (0.0%)</option>
+				
+				<option value="file1">github.com/ArdentK/bmstu-6sem-ppo/internal/app/apiserver/config.go (0.0%)</option>
+				
+				<option value="file2">github.com/ArdentK/bmstu-6sem-ppo/internal/app/apiserver/server.go (100.0%)</option>
+				
+				<option value="file3">github.com/ArdentK/bmstu-6sem-ppo/internal/app/model/testing.go (100.0%)</option>
+				
+				<option value="file4">github.com/ArdentK/bmstu-6sem-ppo/internal/app/model/user.go (81.8%)</option>
+				
+				<option value="file5">github.com/ArdentK/bmstu-6sem-ppo/internal/app/model/validations.go (100.0%)</option>
+				
+				<option value="file6">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/store.go (100.0%)</option>
+				
+				<option value="file7">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/testing.go (80.0%)</option>
+				
+				<option value="file8">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/userrepository.go (75.0%)</option>
+				
+				<option value="file9">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/teststore/store.go (100.0%)</option>
+				
+				<option value="file10">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/teststore/userrepository.go (81.8%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package apiserver
+
+import (
+        "database/sql"
+        "net/http"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore"
+)
+
+func Start(config *Config) error <span class="cov0" title="0">{
+        db, err := newDB(config.DatabaseURL)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">defer db.Close()
+
+        store := sqlstore.New(db)
+        srv := newServer(store)
+
+        return http.ListenAndServe(config.BindAddr, srv)</span>
+}
+
+func newDB(databaseURL string) (*sql.DB, error) <span class="cov0" title="0">{
+        db, err := sql.Open("postgres", databaseURL)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">if err := db.Ping(); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return db, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package apiserver
+
+type Config struct {
+        BindAddr    string `toml:"bind_addr`
+        LogLevel    string `toml:"log_level`
+        DatabaseURL string `toml:"database_url`
+}
+
+func NewConfig() *Config <span class="cov0" title="0">{
+        return &amp;Config{
+                BindAddr:    ":8080",
+                LogLevel:    "debug",
+                DatabaseURL: "host=localhost port=5432 dbname=fencing sslmode=disable user=postgres password=postgres",
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package apiserver
+
+import (
+        "net/http"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+        "github.com/gorilla/mux"
+        "github.com/sirupsen/logrus"
+)
+
+type server struct {
+        router *mux.Router
+        logrus *logrus.Logger
+        store  store.Store
+}
+
+func newServer(store store.Store) *server <span class="cov8" title="1">{
+        s := &amp;server{
+                router: mux.NewRouter(),
+                logrus: logrus.New(),
+                store:  store,
+        }
+
+        s.configureRouter()
+
+        return s
+}</span>
+
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+        s.router.ServeHTTP(w, r)
+}</span>
+
+func (s *server) configureRouter() <span class="cov8" title="1">{
+        s.router.HandleFunc("/users", s.handleUsersCreate()).Methods("POST")
+}</span>
+
+func (s *server) handleUsersCreate() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span>{<span class="cov8" title="1">
+
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package model
+
+import "testing"
+
+func TestUser(t *testing.T) *User <span class="cov8" title="1">{
+        return &amp;User{
+                Email:    "user@example.org",
+                Password: "password",
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package model
+
+import (
+        validation "github.com/go-ozzo/ozzo-validation"
+        "github.com/go-ozzo/ozzo-validation/is"
+        "golang.org/x/crypto/bcrypt"
+)
+
+type User struct {
+        ID                int
+        Email             string
+        Password          string
+        EncryptedPassword string
+}
+
+func (u *User) Validate() error <span class="cov8" title="1">{
+        return validation.ValidateStruct(
+                u,
+                validation.Field(&amp;u.Email, validation.Required, is.Email),
+                validation.Field(&amp;u.Password, validation.By(requiredIf(u.EncryptedPassword == "")), validation.Length(6, 100)),
+        )
+}</span>
+
+func (u *User) BeforeCreate() error <span class="cov8" title="1">{
+        if len(u.Password) &gt; 0 </span><span class="cov8" title="1">{
+                enc, err := encryptString(u.Password)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov8" title="1">u.EncryptedPassword = enc</span>
+        }
+        <span class="cov8" title="1">return nil</span>
+}
+
+func encryptString(s string) (string, error) <span class="cov8" title="1">{
+        b, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.MinCost)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+
+        <span class="cov8" title="1">return string(b), nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package model
+
+import validation "github.com/go-ozzo/ozzo-validation"
+
+func requiredIf(cond bool) validation.RuleFunc <span class="cov8" title="1">{
+        return func(value interface{}) error </span><span class="cov8" title="1">{
+                if cond </span><span class="cov8" title="1">{
+                        return validation.Validate(value, validation.Required)
+                }</span>
+                <span class="cov8" title="1">return nil</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package sqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+        _ "github.com/lib/pq"
+)
+
+type Store struct {
+        db             *sql.DB
+        userRepository *UserRepository
+}
+
+func New(db *sql.DB) *Store <span class="cov8" title="1">{
+        return &amp;Store{
+                db: db,
+        }
+}</span>
+
+func (s *Store) User() store.UserRepository <span class="cov8" title="1">{
+        if s.userRepository != nil </span><span class="cov8" title="1">{
+                return s.userRepository
+        }</span>
+
+        <span class="cov8" title="1">s.userRepository = &amp;UserRepository{
+                store: s,
+        }
+
+        return s.userRepository</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package sqlstore
+
+import (
+        "database/sql"
+        "fmt"
+        "strings"
+        "testing"
+)
+
+func TestDB(t *testing.T, databaseURL string) (*sql.DB, func(...string)) <span class="cov8" title="1">{
+        t.Helper()
+
+        db, err := sql.Open("postgres", databaseURL)
+        if err != nil </span><span class="cov0" title="0">{
+                t.Fatal(err)
+        }</span>
+
+        <span class="cov8" title="1">if err := db.Ping(); err != nil </span><span class="cov0" title="0">{
+                t.Fatal(err)
+        }</span>
+
+        <span class="cov8" title="1">return db, func(tables ...string) </span><span class="cov8" title="1">{
+                if len(tables) &gt; 0 </span><span class="cov8" title="1">{
+                        db.Exec(fmt.Sprintf("TRUNCATE %s CASCADE;", strings.Join(tables, ", ")))
+                }</span>
+
+                <span class="cov8" title="1">db.Close()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package sqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+)
+
+type UserRepository struct {
+        store *Store
+}
+
+func (r *UserRepository) Create(u *model.User) error <span class="cov8" title="1">{
+        if err := u.Validate(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if err := u.BeforeCreate(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return r.store.db.QueryRow(
+                "INSERT INTO users (email, encrypted_password) VALUES ($1, $2) RETURNING id",
+                u.Email,
+                u.EncryptedPassword,
+        ).Scan(&amp;u.ID)</span>
+}
+
+func (r *UserRepository) FindByEmail(email string) (*model.User, error) <span class="cov8" title="1">{
+        u := &amp;model.User{}
+        err := r.store.db.QueryRow(
+                "SELECT id, email, encrypted_password FROM users WHERE email = $1",
+                email,
+        ).Scan(
+                &amp;u.ID,
+                &amp;u.Email,
+                &amp;u.EncryptedPassword,
+        )
+
+        if err != nil </span><span class="cov8" title="1">{
+                if err == sql.ErrNoRows </span><span class="cov8" title="1">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+
+        <span class="cov8" title="1">return u, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package teststore
+
+import (
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+)
+
+type Store struct {
+        userRepository *UserRepository
+}
+
+func New() *Store <span class="cov8" title="1">{
+        return &amp;Store{}
+}</span>
+
+func (s *Store) User() store.UserRepository <span class="cov8" title="1">{
+        if s.userRepository != nil </span><span class="cov8" title="1">{
+                return s.userRepository
+        }</span>
+
+        <span class="cov8" title="1">s.userRepository = &amp;UserRepository{
+                store: s,
+                users: make(map[string]*model.User),
+        }
+
+        return s.userRepository</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package teststore
+
+import (
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+)
+
+type UserRepository struct {
+        store *Store
+        users map[string]*model.User
+}
+
+func (r *UserRepository) Create(u *model.User) error <span class="cov8" title="1">{
+        if err := u.Validate(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if err := u.BeforeCreate(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">r.users[u.Email] = u
+        u.ID = len(r.users)
+
+        return nil</span>
+}
+
+func (r *UserRepository) FindByEmail(email string) (*model.User, error) <span class="cov8" title="1">{
+        u, ok := r.users[email]
+        if !ok </span><span class="cov8" title="1">{
+                return nil, store.ErrRecordNotFound
+        }</span>
+
+        <span class="cov8" title="1">return u, nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

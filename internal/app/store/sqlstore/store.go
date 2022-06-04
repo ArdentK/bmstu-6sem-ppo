@@ -8,8 +8,11 @@ import (
 )
 
 type Store struct {
-	db             *sql.DB
-	userRepository *UserRepository
+	db                    *sql.DB
+	userRepository        *UserRepository
+	competitionRepository *CompetitionRepository
+	battleRepository      *BattleRepository
+	athletRepository      *AthletRepository
 }
 
 func New(db *sql.DB) *Store {
@@ -28,4 +31,40 @@ func (s *Store) User() store.UserRepository {
 	}
 
 	return s.userRepository
+}
+
+func (s *Store) Competition() store.CompetitionRepository {
+	if s.competitionRepository != nil {
+		return s.competitionRepository
+	}
+
+	s.competitionRepository = &CompetitionRepository{
+		store: s,
+	}
+
+	return s.competitionRepository
+}
+
+func (s *Store) Battle() store.BattleRepository {
+	if s.battleRepository != nil {
+		return s.battleRepository
+	}
+
+	s.battleRepository = &BattleRepository{
+		store: s,
+	}
+
+	return s.battleRepository
+}
+
+func (s *Store) Athlet() store.AthletRepository {
+	if s.athletRepository != nil {
+		return s.athletRepository
+	}
+
+	s.athletRepository = &AthletRepository{
+		store: s,
+	}
+
+	return s.athletRepository
 }

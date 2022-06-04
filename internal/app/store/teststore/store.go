@@ -6,7 +6,10 @@ import (
 )
 
 type Store struct {
-	userRepository *UserRepository
+	userRepository        *UserRepository
+	competitionRepository *CompetitionRepository
+	battleRepository      *BattleRepository
+	athletRepository      *AthletRepository
 }
 
 func New() *Store {
@@ -24,4 +27,43 @@ func (s *Store) User() store.UserRepository {
 	}
 
 	return s.userRepository
+}
+
+func (s *Store) Competition() store.CompetitionRepository {
+	if s.competitionRepository != nil {
+		return s.competitionRepository
+	}
+
+	s.competitionRepository = &CompetitionRepository{
+		store:        s,
+		competitions: make(map[int]*model.Competition),
+	}
+
+	return s.competitionRepository
+}
+
+func (s *Store) Battle() store.BattleRepository {
+	if s.battleRepository != nil {
+		return s.battleRepository
+	}
+
+	s.battleRepository = &BattleRepository{
+		store:   s,
+		battles: make(map[int]*model.Battle),
+	}
+
+	return s.battleRepository
+}
+
+func (s *Store) Athlet() store.AthletRepository {
+	if s.athletRepository != nil {
+		return s.athletRepository
+	}
+
+	s.athletRepository = &AthletRepository{
+		store:   s,
+		athlets: make(map[int]*model.Athlet),
+	}
+
+	return s.athletRepository
 }
