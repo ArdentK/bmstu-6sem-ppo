@@ -52,7 +52,8 @@ func (r *CompetitionRepository) Find(id int) (*model.Competition, error) {
 
 func (r *CompetitionRepository) GetAll() ([]*model.Competition, error) {
 	items := []*model.Competition{}
-	rows, err := r.store.db.Query("SELECT id, name, dt, age_category, weapon_type, is_team, status, sex, type FROM competitions;")
+	rows, err := r.store.db.Query(
+		"SELECT id, name, dt, age_category, weapon_type, is_team, status, sex, type FROM competitions;")
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +78,34 @@ func (r *CompetitionRepository) GetAll() ([]*model.Competition, error) {
 	}
 
 	return items, nil
+}
+func (r *CompetitionRepository) Update(c *model.Competition) error {
+	// return r.store.db.QueryRow(
+	// 	"UPDATE competitions SET name = $2, dt = $3, age_category = $4, weapon_type = $5, is_team = $6, status = $7, sex = $8, type = $9 WHERE id = $1"+
+	// 		"RETURNING id, name, dt, age_category, weapon_type, is_team, status, sex, type;",
+	// 	c.ID, c.Name, c.Date, c.AgeCategory, c.WeaponType, c.IsTeam, c.Status, c.Sex, c.Type,
+	// ).Scan(
+	// 	&c.ID, &c.Name, &c.Date, &c.AgeCategory, &c.WeaponType, &c.IsTeam, &c.Status, &c.Sex, &c.Type,
+	// )
+	_, err := r.store.db.Exec(
+		"UPDATE competitions SET name = $2, dt = $3, age_category = $4, weapon_type = $5, is_team = $6, status = $7, sex = $8, type = $9 WHERE id = $1;",
+		c.ID,
+		c.Name,
+		c.Date,
+		c.AgeCategory,
+		c.WeaponType,
+		c.IsTeam,
+		c.Status,
+		c.Sex,
+		c.Type,
+	)
+
+	return err
+}
+
+func (r *CompetitionRepository) Delete(id int) error {
+	_, err := r.store.db.Exec("DELETE FROM competitions WHERE id = $1;", id)
+	return err
 }
 
 func (r *CompetitionRepository) FindBySex(sex string) ([]*model.Competition, error) { return nil, nil }

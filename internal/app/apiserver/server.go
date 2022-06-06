@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
@@ -15,6 +16,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/schema"
 	"github.com/gorilla/sessions"
 	"github.com/sirupsen/logrus"
 )
@@ -32,6 +34,9 @@ const (
 var (
 	errIncorrectEmailOrPassword = errors.New("incorrect email or password")
 	errNotAuthenticated         = errors.New("not authenticated")
+	errTemplateError            = errors.New("template error")
+	errDB                       = errors.New("db error")
+	errForm                     = errors.New("bad form")
 )
 
 type ctxKey int8
@@ -66,10 +71,7 @@ func (s *server) configureLogger() {
 	if err != nil {
 		fmt.Printf("error opening file: %v", err)
 	}
-	// Log as JSON instead of the default ASCII formatter.
 	s.logger.SetFormatter(&logrus.JSONFormatter{})
-
-	// Output to stderr instead of stdout, could also be a file.
 	s.logger.SetOutput(f)
 }
 
@@ -87,15 +89,133 @@ func (s *server) configureRouter() {
 	s.router.HandleFunc("/sessions", s.handleSessionCreate()).Methods("POST")
 
 	s.router.HandleFunc("/competitions", s.handleCompetitionsIndex()).Methods("GET")
+	s.router.HandleFunc("/competitions/new", s.handleCompetitionAddForm()).Methods("GET")
+	s.router.HandleFunc("/competitions/new", s.handleCompetitionAdd()).Methods("POST")
+	s.router.HandleFunc("/competitions/{id}", s.handleCompetitionUpdate()).Methods("POST")
+	s.router.HandleFunc("/competitions/{id}", s.handleCompetitionEdit()).Methods("GET")
+	s.router.HandleFunc("/competitions/{id}", s.handleCompetitionDelete()).Methods("DELETE")
+
 	s.router.HandleFunc("/athlets", s.handleAthletsIndex()).Methods("GET")
-	s.router.HandleFunc("/news", s.HandleNewsIndex()).Methods("GET")
+	s.router.HandleFunc("/news", s.handleNewsIndex()).Methods("GET")
 
 	private := s.router.PathPrefix("/private").Subrouter()
 	private.Use(s.authenticateUser)
 	private.HandleFunc("/whoami", s.handleWhoami()).Methods("GET")
 }
 
-func (s *server) HandleNewsIndex() http.HandlerFunc {
+func (s *server) handleCompetitionAddForm() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := s.tmpl.ExecuteTemplate(w, "create.html", nil)
+		if err != nil {
+			s.respond(w, r, http.StatusInternalServerError, errTemplateError)
+			return
+		}
+	}
+}
+
+func (s *server) handleCompetitionAdd() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+		item := model.Competition{}
+		decoder := schema.NewDecoder()
+		decoder.IgnoreUnknownKeys(true)
+		err := decoder.Decode(&item, r.PostForm)
+		if err != nil {
+			s.respond(w, r, http.StatusBadRequest, errForm)
+			return
+		}
+
+		err = s.store.Competition().Create(&item)
+		if err != nil {
+			s.respond(w, r, http.StatusInternalServerError, errDB)
+			return
+		}
+
+		http.Redirect(w, r, "/competitions", http.StatusFound)
+	}
+}
+
+func (s *server) handleCompetitionUpdate() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			s.respond(w, r, http.StatusBadGateway, "bad id")
+			return
+		}
+
+		r.ParseForm()
+		item := model.Competition{}
+		decoder := schema.NewDecoder()
+		decoder.IgnoreUnknownKeys(true)
+		err = decoder.Decode(&item, r.PostForm)
+
+		if err != nil {
+			s.respond(w, r, http.StatusBadRequest, errForm)
+			return
+		}
+
+		item.ID = id
+
+		err = s.store.Competition().Update(&item)
+		if err != nil {
+			s.respond(w, r, http.StatusInternalServerError, errDB)
+			return
+		}
+
+		http.Redirect(w, r, "/competitions", http.StatusFound)
+	}
+}
+
+func (s *server) handleCompetitionEdit() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			s.respond(w, r, http.StatusBadGateway, "bad id")
+			return
+		}
+
+		item, err := s.store.Competition().Find(id)
+		if err != nil {
+			s.respond(w, r, http.StatusInternalServerError, errDB)
+			return
+		}
+
+		if item == nil {
+			s.respond(w, r, http.StatusNotFound, "no record")
+			return
+		}
+
+		err = s.tmpl.ExecuteTemplate(w, "edit.html", item)
+		if err != nil {
+			s.respond(w, r, http.StatusInternalServerError, errTemplateError)
+			return
+		}
+	}
+}
+
+func (s *server) handleCompetitionDelete() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			s.respond(w, r, http.StatusBadGateway, "bad id")
+			return
+		}
+
+		err = s.store.Competition().Delete(id)
+		if err != nil {
+			s.respond(w, r, http.StatusInternalServerError, errDB)
+			return
+		}
+
+		w.Header().Set("Content-type", "application/json")
+		s.respond(w, r, http.StatusOK, nil)
+	}
+}
+
+func (s *server) handleNewsIndex() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		elems, err := s.store.News().GetAll()
 		if err != nil {
@@ -109,7 +229,7 @@ func (s *server) HandleNewsIndex() http.HandlerFunc {
 			Items: elems,
 		})
 		if err != nil {
-			http.Error(w, `Template errror`, http.StatusInternalServerError)
+			s.respond(w, r, http.StatusInternalServerError, errTemplateError)
 			return
 		}
 	}

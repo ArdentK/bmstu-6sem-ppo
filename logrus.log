@@ -1,0 +1,24 @@
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"9ed94523-705c-4ebc-8a26-82c98cd20714","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"completed with 201 Created in 14.592381ms","remote_addr":"","request_id":"9ed94523-705c-4ebc-8a26-82c98cd20714","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"b6edc732-c274-4238-a3ae-f8465a1190b7","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"completed with 400 Bad Request in 40.718µs","remote_addr":"","request_id":"b6edc732-c274-4238-a3ae-f8465a1190b7","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"0cac3907-fd41-496a-b3be-e21a9362bcf1","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"completed with 422 Unprocessable Entity in 151.699µs","remote_addr":"","request_id":"0cac3907-fd41-496a-b3be-e21a9362bcf1","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"767daa80-c9c9-46b4-8ff8-ee6cd3c7a721","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"completed with 422 Unprocessable Entity in 113.775µs","remote_addr":"","request_id":"767daa80-c9c9-46b4-8ff8-ee6cd3c7a721","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"3f43fb4d-f3f8-4e51-b870-b6247af5e440","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"completed with 401 Unauthorized in 75.92µs","remote_addr":"","request_id":"3f43fb4d-f3f8-4e51-b870-b6247af5e440","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"a9f14613-e45f-4830-a9fc-687b8113c12e","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"completed with 401 Unauthorized in 65.862µs","remote_addr":"","request_id":"a9f14613-e45f-4830-a9fc-687b8113c12e","time":"2022-06-06T14:55:01+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"45f853a0-6631-4635-b5d4-82b187d5ad49","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"completed with 201 Created in 21.270345ms","remote_addr":"","request_id":"45f853a0-6631-4635-b5d4-82b187d5ad49","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"136375ab-6099-4c0a-afff-df3be24de27c","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"completed with 400 Bad Request in 49.517µs","remote_addr":"","request_id":"136375ab-6099-4c0a-afff-df3be24de27c","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"5692d055-04ec-4eea-b0b1-f984012f4691","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"completed with 422 Unprocessable Entity in 146.876µs","remote_addr":"","request_id":"5692d055-04ec-4eea-b0b1-f984012f4691","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"b9a9b0b0-9d64-4b0e-91c8-f694ae837e2f","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"completed with 422 Unprocessable Entity in 121.315µs","remote_addr":"","request_id":"b9a9b0b0-9d64-4b0e-91c8-f694ae837e2f","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"751aa774-9548-4e84-b170-4791a00c702f","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"completed with 401 Unauthorized in 63.416µs","remote_addr":"","request_id":"751aa774-9548-4e84-b170-4791a00c702f","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"started POST ","remote_addr":"","request_id":"90a780c2-79b0-48de-96d6-b9c919f84813","time":"2022-06-06T18:12:44+03:00"}
+{"level":"info","msg":"completed with 401 Unauthorized in 62.019µs","remote_addr":"","request_id":"90a780c2-79b0-48de-96d6-b9c919f84813","time":"2022-06-06T18:12:44+03:00"}

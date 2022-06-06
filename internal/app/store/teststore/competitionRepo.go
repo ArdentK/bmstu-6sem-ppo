@@ -9,6 +9,8 @@ type CompetitionRepository struct {
 
 func (r *CompetitionRepository) Create(c *model.Competition) error       { return nil }
 func (r *CompetitionRepository) GetAll() ([]*model.Competition, error)   { return nil, nil }
+func (r *CompetitionRepository) Update(*model.Competition) error         { return nil }
+func (r *CompetitionRepository) Delete(id int) error                     { return nil }
 func (r *CompetitionRepository) Find(id int) (*model.Competition, error) { return nil, nil }
 func (r *CompetitionRepository) FindByName(name string) ([]*model.Competition, error) {
 	return nil, nil

@@ -32,3 +32,29 @@ func TestCompetitionRepo_Find(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, c2)
 }
+
+func TestCompetitionsRepo_Update(t *testing.T) {
+	db, teardown := sqlstore.TestDB(t, database, databaseURL)
+	defer teardown("competitions")
+
+	s := sqlstore.New(db)
+	c := model.TestCompetition(t)
+	s.Competition().Create(c)
+
+	c.Name = "new name"
+	err := s.Competition().Update(c)
+	newC, _ := s.Competition().Find(c.ID)
+
+	assert.NoError(t, err)
+	assert.Equal(t, c.Name, newC.Name)
+}
+
+func TestCompetitionRepo_Delete(t *testing.T) {
+	db, teardown := sqlstore.TestDB(t, database, databaseURL)
+	defer teardown("competitions")
+
+	s := sqlstore.New(db)
+	c := model.TestCompetition(t)
+
+	assert.NoError(t, s.Competition().Delete(c.ID))
+}

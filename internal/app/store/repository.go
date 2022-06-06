@@ -12,6 +12,8 @@ type CompetitionRepository interface {
 	Create(*model.Competition) error
 	GetAll() ([]*model.Competition, error)
 	Find(int) (*model.Competition, error)
+	Update(*model.Competition) error
+	Delete(int) error
 	FindByName(string) ([]*model.Competition, error)
 	FindByDate(string) ([]*model.Competition, error)
 	FindByAgeCategory(string) ([]*model.Competition, error)

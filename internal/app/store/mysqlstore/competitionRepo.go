@@ -87,6 +87,8 @@ func (r *CompetitionRepository) GetAll() ([]*model.Competition, error) {
 
 	return items, nil
 }
+func (r *CompetitionRepository) Update(c *model.Competition) error                  { return nil }
+func (r *CompetitionRepository) Delete(id int) error                                { return nil }
 func (r *CompetitionRepository) FindBySex(sex string) ([]*model.Competition, error) { return nil, nil }
 func (r *CompetitionRepository) FindByType(t string) ([]*model.Competition, error)  { return nil, nil }
 func (r *CompetitionRepository) FindByName(name string) ([]*model.Competition, error) {

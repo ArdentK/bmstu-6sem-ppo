@@ -24,7 +24,7 @@
         <th>Sex</th>
         <th>Type</th>
         <!-- <th style="width:60px;">Weapon type</th> -->
-        <th style="width:140px;"><a href="/items/new" class="btn btn-success">New</a></th>
+        <th style="width:140px;"><a href="/competitions/new" class="btn btn-success">New</a></th>
       </tr>
     </thead>
     <tbody>
@@ -40,7 +40,7 @@
         <td>{{.Sex}}</td>
         <td>{{.Type}}</td>
         <td>
-          <a href="/items/{{.ID}}" class="btn btn-primary">Edit</a>
+          <a href="/competitions/{{.ID}}" class="btn btn-primary">Edit</a>
           <span data-id="{{.ID}}" class="do-delete btn btn-danger">Del</span>
         </td>
       </tr>
@@ -57,7 +57,7 @@
     }
     $elem = $(this)
     $.ajax({
-      url: '/items/' + $elem.data("id"),
+      url: '/competitions/' + $elem.data("id"),
       type: 'DELETE',
       data: {},
       success: function(resp) {
