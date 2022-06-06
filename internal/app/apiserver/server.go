@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
@@ -21,6 +23,10 @@ const (
 	sessionName        = "user"
 	ctxKeyUser  ctxKey = iota
 	ctxKeyRequestID
+)
+
+const (
+	logFilePath = "../../../logrus.log"
 )
 
 var (
@@ -49,9 +55,22 @@ func newServer(store store.Store, sessionStore sessions.Store, templatesPath str
 		tmpl:         templates,
 	}
 
+	s.configureLogger()
 	s.configureRouter()
 
 	return s
+}
+
+func (s *server) configureLogger() {
+	f, err := os.OpenFile(logFilePath, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
+	if err != nil {
+		fmt.Printf("error opening file: %v", err)
+	}
+	// Log as JSON instead of the default ASCII formatter.
+	s.logger.SetFormatter(&logrus.JSONFormatter{})
+
+	// Output to stderr instead of stdout, could also be a file.
+	s.logger.SetOutput(f)
 }
 
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
