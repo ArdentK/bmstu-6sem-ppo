@@ -39,3 +39,9 @@ type AthletRepository interface {
 	FindByRFSubject(string) ([]*model.Athlet, error)
 	FindByRank(string) ([]*model.Athlet, error)
 }
+
+type NewsRepository interface {
+	Create(*model.News) error
+	Find(int) (*model.News, error)
+	GetAll() ([]*model.News, error)
+}

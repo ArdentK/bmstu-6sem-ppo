@@ -69,10 +69,31 @@ func (s *server) configureRouter() {
 
 	s.router.HandleFunc("/competitions", s.handleCompetitionsIndex()).Methods("GET")
 	s.router.HandleFunc("/athlets", s.handleAthletsIndex()).Methods("GET")
+	s.router.HandleFunc("/news", s.HandleNewsIndex()).Methods("GET")
 
 	private := s.router.PathPrefix("/private").Subrouter()
 	private.Use(s.authenticateUser)
 	private.HandleFunc("/whoami", s.handleWhoami()).Methods("GET")
+}
+
+func (s *server) HandleNewsIndex() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		elems, err := s.store.News().GetAll()
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+			return
+		}
+
+		err = s.tmpl.ExecuteTemplate(w, "indexNews.html", struct {
+			Items []*model.News
+		}{
+			Items: elems,
+		})
+		if err != nil {
+			http.Error(w, `Template errror`, http.StatusInternalServerError)
+			return
+		}
+	}
 }
 
 func (s *server) handleCompetitionsIndex() http.HandlerFunc {
@@ -92,8 +113,6 @@ func (s *server) handleCompetitionsIndex() http.HandlerFunc {
 			http.Error(w, `Template errror`, http.StatusInternalServerError)
 			return
 		}
-
-		s.respond(w, r, http.StatusOK, "competitions")
 	}
 }
 

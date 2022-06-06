@@ -49,6 +49,7 @@ func (r *CompetitionRepository) Find(id int) (*model.Competition, error) {
 	}
 	return c, nil
 }
+
 func (r *CompetitionRepository) GetAll() ([]*model.Competition, error) {
 	items := []*model.Competition{}
 	rows, err := r.store.db.Query("SELECT id, name, dt, age_category, weapon_type, is_team, status, sex, type FROM competitions;")

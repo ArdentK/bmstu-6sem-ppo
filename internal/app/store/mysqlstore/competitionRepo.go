@@ -5,6 +5,8 @@ import (
 
 	"github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
 	"github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type CompetitionRepository struct {
@@ -12,8 +14,8 @@ type CompetitionRepository struct {
 }
 
 func (r *CompetitionRepository) Create(c *model.Competition) error {
-	return r.store.db.QueryRow(
-		"INSERT INTO competitions (name, dt, age_category, weapon_type, is_team, status, sex, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+	res, err := r.store.db.Exec(
+		"INSERT INTO competitions (name, dt, age_category, weapon_type, is_team, status, sex, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 		c.Name,
 		c.Date,
 		c.AgeCategory,
@@ -22,12 +24,20 @@ func (r *CompetitionRepository) Create(c *model.Competition) error {
 		c.Status,
 		c.Sex,
 		c.Type,
-	).Scan(&c.ID)
+	)
+	if err != nil {
+		return err
+	}
+
+	newId, err := res.LastInsertId()
+	c.ID = int(newId)
+
+	return err
 }
 func (r *CompetitionRepository) Find(id int) (*model.Competition, error) {
 	c := &model.Competition{}
 	err := r.store.db.QueryRow(
-		"SELECT id, name, dt, age_category, weapon_type, is_team, status, sex, type FROM competitions WHERE id = $1",
+		"SELECT id, name, dt, age_category, weapon_type, is_team, status, sex, type FROM competitions WHERE id = ?",
 		id,
 	).Scan(
 		&c.ID,

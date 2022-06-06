@@ -5,4 +5,5 @@ type Store interface {
 	Competition() CompetitionRepository
 	Battle() BattleRepository
 	Athlet() AthletRepository
+	News() NewsRepository
 }

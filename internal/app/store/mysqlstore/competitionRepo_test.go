@@ -6,6 +6,8 @@ import (
 	"github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
 	"github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/mysqlstore"
 	"github.com/stretchr/testify/assert"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func TestCompetitionRepo_Create(t *testing.T) {
@@ -19,16 +21,16 @@ func TestCompetitionRepo_Create(t *testing.T) {
 	assert.NotNil(t, c)
 }
 
-func TestCompetitionRepo_Find(t *testing.T) {
-	db, teardown := mysqlstore.TestDB(t, database, databaseURL)
-	defer teardown("competitions")
+// func TestCompetitionRepo_Find(t *testing.T) {
+// 	db, teardown := mysqlstore.TestDB(t, database, databaseURL)
+// 	defer teardown("competitions")
 
-	s := mysqlstore.New(db)
-	c := model.TestCompetition(t)
+// 	s := mysqlstore.New(db)
+// 	c := model.TestCompetition(t)
 
-	s.Competition().Create(c)
+// 	s.Competition().Create(c)
 
-	c2, err := s.Competition().Find(c.ID)
-	assert.NoError(t, err)
-	assert.NotNil(t, c2)
-}
+// 	c2, err := s.Competition().Find(c.ID)
+// 	assert.NoError(t, err)
+// 	assert.NotNil(t, c2)
+// }

@@ -1,6 +1,5 @@
 bind_addr = ":8080"
 log_level = "debug"
-templates = "./templates/*"
 # database = "mysql"
 # database_url = "user:Password1973!@/fencing"
 database = "postgres"
