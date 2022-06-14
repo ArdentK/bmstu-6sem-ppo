@@ -1,0 +1,47 @@
+@startuml dataAccess
+
+left to right direction
+
+interface Repository<Type, IdType> {
+    +get(id): Type
+    +update(id, Type)
+    +create(Type): IdType
+    +delete(id)
+}
+
+interface AccountRepository {
+    +save(Account)
+    +checkPassword(String, String)
+    +changePassword(String, String)
+    +getByID(int)
+    +getAll()
+    +remove(int)
+}
+
+AccountRepository ..|> Repository: Account, Number
+
+interface CompetitionsRepository {
+    +save(Competition)
+    +getByID(int)
+    +getAll()
+    +remove(int)
+    +getByType(String)
+    +getByWeaponType(String)
+    +getByStatus(String)
+    +getByAgeCategory(String)
+}
+
+CompetitionsRepository ..|> Repository: Competition, Number
+
+interface BattleRepository {
+    +save(Battle)
+    +getByID(int)
+    +getAll()
+    +getByWinner(int)
+    +gerByLoser(int)
+    +remove(int)
+}
+
+BattleRepository ..|> Repository: Battle, Number
+
+@enduml

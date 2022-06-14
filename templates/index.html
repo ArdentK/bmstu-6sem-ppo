@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  </head>
+  <body>
+	<div class="container">
+    <h1>Competitions</h1>
+    <table class="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Date</th>
+        <th>AgeCategory</th>
+        <th>WeaponType</th>
+        <th>IsTeam</th>
+        <th>Status</th>
+        <th>Sex</th>
+        <th>Type</th>
+        <!-- <th style="width:60px;">Weapon type</th> -->
+        <th style="width:140px;"><a href="/competitions/new" class="btn btn-success">New</a></th>
+      </tr>
+    </thead>
+    <tbody>
+    {{range .Items}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td>{{.Name}}</td>
+        <td>{{.Date}}</td>
+        <td>{{.AgeCategory}}</td>
+        <td>{{.WeaponType}}</td>
+        <td>{{.IsTeam}}</td>
+        <td>{{.Status}}</td>
+        <td>{{.Sex}}</td>
+        <td>{{.Type}}</td>
+        <td>
+          <a href="/competitions/{{.ID}}" class="btn btn-primary">Edit</a>
+          <span data-id="{{.ID}}" class="do-delete btn btn-danger">Del</span>
+        </td>
+      </tr>
+		{{end}}
+    </tbody>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+
+  <script type="text/javascript">
+  $('.do-delete').click(function() {
+    if(!confirm("Are you sure?")) {
+      return
+    }
+    $elem = $(this)
+    $.ajax({
+      url: '/competitions/' + $elem.data("id"),
+      type: 'DELETE',
+      data: {},
+      success: function(resp) {
+        if(resp.updated) {
+          $elem.parent().parent().remove()
+        }
+      },
+    });
+  })
+  </script>
+  
+  </body>
+</html>
