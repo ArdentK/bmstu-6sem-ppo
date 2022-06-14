@@ -77,3 +77,5 @@ func (r *UserRepository) Find(id int) (*model.User, error) {
 
 	return u, nil
 }
+
+func (r *UserRepository) Authorize(email, pass string) (*model.User, error) { return nil, nil }

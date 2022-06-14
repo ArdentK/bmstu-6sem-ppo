@@ -59,23 +59,55 @@
 				
 				<option value="file1">github.com/ArdentK/bmstu-6sem-ppo/internal/app/apiserver/config.go (0.0%)</option>
 				
-				<option value="file2">github.com/ArdentK/bmstu-6sem-ppo/internal/app/apiserver/server.go (100.0%)</option>
+				<option value="file2">github.com/ArdentK/bmstu-6sem-ppo/internal/app/apiserver/responsewriter.go (100.0%)</option>
 				
-				<option value="file3">github.com/ArdentK/bmstu-6sem-ppo/internal/app/model/testing.go (100.0%)</option>
+				<option value="file3">github.com/ArdentK/bmstu-6sem-ppo/internal/app/apiserver/server.go (46.0%)</option>
 				
-				<option value="file4">github.com/ArdentK/bmstu-6sem-ppo/internal/app/model/user.go (81.8%)</option>
+				<option value="file4">github.com/ArdentK/bmstu-6sem-ppo/internal/app/model/testing.go (25.0%)</option>
 				
-				<option value="file5">github.com/ArdentK/bmstu-6sem-ppo/internal/app/model/validations.go (100.0%)</option>
+				<option value="file5">github.com/ArdentK/bmstu-6sem-ppo/internal/app/model/user.go (69.2%)</option>
 				
-				<option value="file6">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/store.go (100.0%)</option>
+				<option value="file6">github.com/ArdentK/bmstu-6sem-ppo/internal/app/model/validations.go (100.0%)</option>
 				
-				<option value="file7">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/testing.go (80.0%)</option>
+				<option value="file7">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/mysqlstore/athletRepo.go (0.0%)</option>
 				
-				<option value="file8">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/userrepository.go (75.0%)</option>
+				<option value="file8">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/mysqlstore/battleRepo.go (0.0%)</option>
 				
-				<option value="file9">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/teststore/store.go (100.0%)</option>
+				<option value="file9">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/mysqlstore/competitionRepo.go (14.3%)</option>
 				
-				<option value="file10">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/teststore/userrepository.go (81.8%)</option>
+				<option value="file10">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/mysqlstore/newsRepo.go (0.0%)</option>
+				
+				<option value="file11">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/mysqlstore/store.go (38.1%)</option>
+				
+				<option value="file12">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/mysqlstore/testing.go (80.0%)</option>
+				
+				<option value="file13">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/mysqlstore/userRepo.go (68.0%)</option>
+				
+				<option value="file14">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/athletRepo.go (0.0%)</option>
+				
+				<option value="file15">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/battleRepo.go (0.0%)</option>
+				
+				<option value="file16">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/competitionRepo.go (28.1%)</option>
+				
+				<option value="file17">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/newsRepo.go (0.0%)</option>
+				
+				<option value="file18">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/store.go (42.9%)</option>
+				
+				<option value="file19">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/testing.go (80.0%)</option>
+				
+				<option value="file20">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore/userRepo.go (52.0%)</option>
+				
+				<option value="file21">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/teststore/athletRepo.go (0.0%)</option>
+				
+				<option value="file22">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/teststore/battleRepo.go (0.0%)</option>
+				
+				<option value="file23">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/teststore/competitionRepo.go (0.0%)</option>
+				
+				<option value="file24">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/teststore/newsRepo.go (0.0%)</option>
+				
+				<option value="file25">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/teststore/store.go (23.8%)</option>
+				
+				<option value="file26">github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/teststore/userrepository.go (75.0%)</option>
 				
 				</select>
 			</div>
@@ -95,24 +127,35 @@ import (
         "database/sql"
         "net/http"
 
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/mysqlstore"
         "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store/sqlstore"
+        "github.com/gorilla/sessions"
+
+        _ "github.com/go-sql-driver/mysql"
 )
 
 func Start(config *Config) error <span class="cov0" title="0">{
-        db, err := newDB(config.DatabaseURL)
+        db, err := newDB(config.Database, config.DatabaseURL)
         if err != nil </span><span class="cov0" title="0">{
                 return nil
         }</span>
         <span class="cov0" title="0">defer db.Close()
 
         store := sqlstore.New(db)
-        srv := newServer(store)
+        sessionStore := sessions.NewCookieStore([]byte(config.SessionKey))
+        srv := newServer(store, sessionStore, "./templates/*")
 
-        return http.ListenAndServe(config.BindAddr, srv)</span>
+        if config.Database == "mysql" </span><span class="cov0" title="0">{
+                store2 := mysqlstore.New(db)
+                srv2 := newServer(store2, sessionStore, "./templates/*")
+                return http.ListenAndServe(config.BindAddr, srv2)
+        }</span>
+
+        <span class="cov0" title="0">return http.ListenAndServe(config.BindAddr, srv)</span>
 }
 
-func newDB(databaseURL string) (*sql.DB, error) <span class="cov0" title="0">{
-        db, err := sql.Open("postgres", databaseURL)
+func newDB(database, databaseURL string) (*sql.DB, error) <span class="cov0" title="0">{
+        db, err := sql.Open(database, databaseURL)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
@@ -128,66 +171,493 @@ func newDB(databaseURL string) (*sql.DB, error) <span class="cov0" title="0">{
 		<pre class="file" id="file1" style="display: none">package apiserver
 
 type Config struct {
-        BindAddr    string `toml:"bind_addr`
-        LogLevel    string `toml:"log_level`
-        DatabaseURL string `toml:"database_url`
+        BindAddr    string `toml:"bind_addr"`
+        LogLevel    string `toml:"log_level"`
+        Database    string `toml:"database"`
+        DatabaseURL string `toml:"database_url"`
+        SessionKey  string `toml:"session_key"`
 }
 
 func NewConfig() *Config <span class="cov0" title="0">{
         return &amp;Config{
-                BindAddr:    ":8080",
-                LogLevel:    "debug",
-                DatabaseURL: "host=localhost port=5432 dbname=fencing sslmode=disable user=postgres password=postgres",
+                BindAddr: ":8080",
+                LogLevel: "debug",
+                // Database: "postgres",
+                // DatabaseURL: "host=localhost port=5432 dbname=fencing sslmode=disable user=postgres password=postgres",
         }
 }</span>
 </pre>
 		
 		<pre class="file" id="file2" style="display: none">package apiserver
 
-import (
-        "net/http"
+import "net/http"
 
+type responseWriter struct {
+        http.ResponseWriter
+        code int
+}
+
+func (w *responseWriter) WriteHeader(statusCode int) <span class="cov8" title="1">{
+        w.code = statusCode
+        w.ResponseWriter.WriteHeader(statusCode)
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package apiserver
+
+import (
+        "context"
+        "encoding/json"
+        "errors"
+        "fmt"
+        "html/template"
+        "net/http"
+        "os"
+        "strconv"
+        "time"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
         "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+        "github.com/google/uuid"
+        "github.com/gorilla/handlers"
         "github.com/gorilla/mux"
+        "github.com/gorilla/schema"
+        "github.com/gorilla/sessions"
         "github.com/sirupsen/logrus"
 )
 
+const (
+        sessionName        = "usernew"
+        ctxKeyUser  ctxKey = iota
+        ctxKeyRequestID
+)
+
+const (
+        logFilePath = "../../../logrus.log"
+)
+
+var (
+        errIncorrectEmailOrPassword = errors.New("incorrect email or password")
+        errNotAuthenticated         = errors.New("not authenticated")
+        errTemplateError            = errors.New("template error")
+        errDB                       = errors.New("db error")
+        errForm                     = errors.New("bad form")
+)
+
+type ctxKey int8
+
 type server struct {
-        router *mux.Router
-        logrus *logrus.Logger
-        store  store.Store
+        router       *mux.Router
+        logger       *logrus.Logger
+        store        store.Store
+        sessionStore sessions.Store
+        tmpl         *template.Template
 }
 
-func newServer(store store.Store) *server <span class="cov8" title="1">{
+func newServer(store store.Store, sessionStore sessions.Store, templatesPath string) *server <span class="cov8" title="1">{
+        templates := template.Must(template.ParseGlob(templatesPath))
+
         s := &amp;server{
-                router: mux.NewRouter(),
-                logrus: logrus.New(),
-                store:  store,
+                router:       mux.NewRouter(),
+                logger:       logrus.New(),
+                store:        store,
+                sessionStore: sessionStore,
+                tmpl:         templates,
         }
 
+        s.configureLogger()
         s.configureRouter()
 
         return s
 }</span>
+
+func (s *server) configureLogger() <span class="cov8" title="1">{
+        f, err := os.OpenFile(logFilePath, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0666)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Printf("error opening file: %v", err)
+        }</span>
+        <span class="cov8" title="1">s.logger.SetFormatter(&amp;logrus.JSONFormatter{})
+        s.logger.SetOutput(f)</span>
+}
 
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
         s.router.ServeHTTP(w, r)
 }</span>
 
 func (s *server) configureRouter() <span class="cov8" title="1">{
+        s.router.Use(s.setRequestID)
+        s.router.Use(s.logRequest)
+        s.router.Use(handlers.CORS(handlers.AllowedOrigins([]string{"*"})))
+
+        s.router.HandleFunc("/", s.handleIndex()).Methods("GET")
+        s.router.HandleFunc("/login", s.handleLogin()).Methods("POST")
+        s.router.HandleFunc("/logout", s.handleLogout()).Methods("POST")
+
         s.router.HandleFunc("/users", s.handleUsersCreate()).Methods("POST")
+        s.router.HandleFunc("/sessions", s.handleSessionCreate()).Methods("POST")
+
+        s.router.HandleFunc("/competitions", s.handleCompetitionsIndex()).Methods("GET")
+        s.router.HandleFunc("/competitions/new", s.handleCompetitionAddForm()).Methods("GET")
+        s.router.HandleFunc("/competitions/new", s.handleCompetitionAdd()).Methods("POST")
+        s.router.HandleFunc("/competitions/{id}", s.handleCompetitionUpdate()).Methods("POST")
+        s.router.HandleFunc("/competitions/{id}", s.handleCompetitionEdit()).Methods("GET")
+        s.router.HandleFunc("/competitions/{id}", s.handleCompetitionDelete()).Methods("DELETE")
+
+        s.router.HandleFunc("/athlets", s.handleAthletsIndex()).Methods("GET")
+        s.router.HandleFunc("/news", s.handleNewsIndex()).Methods("GET")
+
+        private := s.router.PathPrefix("/private").Subrouter()
+        private.Use(s.authenticateUser)
+        private.HandleFunc("/whoami", s.handleWhoami()).Methods("GET")
 }</span>
 
-func (s *server) handleUsersCreate() http.HandlerFunc <span class="cov8" title="1">{
-        return func(w http.ResponseWriter, r *http.Request) </span>{<span class="cov8" title="1">
+func (s *server) handleCompetitionAddForm() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                err := s.tmpl.ExecuteTemplate(w, "create.html", nil)
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusInternalServerError, errTemplateError)
+                        return
+                }</span>
+        }
+}
 
+func (s *server) handleCompetitionAdd() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                r.ParseForm()
+                item := model.Competition{}
+                decoder := schema.NewDecoder()
+                decoder.IgnoreUnknownKeys(true)
+                err := decoder.Decode(&amp;item, r.PostForm)
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusBadRequest, errForm)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">err = s.store.Competition().Create(&amp;item)
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusInternalServerError, errDB)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">http.Redirect(w, r, "/competitions", http.StatusFound)</span>
+        }
+}
+
+func (s *server) handleCompetitionUpdate() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                vars := mux.Vars(r)
+                id, err := strconv.Atoi(vars["id"])
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusBadGateway, "bad id")
+                        return
+                }</span>
+
+                <span class="cov0" title="0">r.ParseForm()
+                item := model.Competition{}
+                decoder := schema.NewDecoder()
+                decoder.IgnoreUnknownKeys(true)
+                err = decoder.Decode(&amp;item, r.PostForm)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusBadRequest, errForm)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">item.ID = id
+
+                err = s.store.Competition().Update(&amp;item)
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusInternalServerError, errDB)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">http.Redirect(w, r, "/competitions", http.StatusFound)</span>
+        }
+}
+
+func (s *server) handleCompetitionEdit() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                vars := mux.Vars(r)
+                id, err := strconv.Atoi(vars["id"])
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusBadGateway, "bad id")
+                        return
+                }</span>
+
+                <span class="cov0" title="0">item, err := s.store.Competition().Find(id)
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusInternalServerError, errDB)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">if item == nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusNotFound, "no record")
+                        return
+                }</span>
+
+                <span class="cov0" title="0">err = s.tmpl.ExecuteTemplate(w, "edit.html", item)
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusInternalServerError, errTemplateError)
+                        return
+                }</span>
+        }
+}
+
+func (s *server) handleCompetitionDelete() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                vars := mux.Vars(r)
+                id, err := strconv.Atoi(vars["id"])
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusBadGateway, "bad id")
+                        return
+                }</span>
+
+                <span class="cov0" title="0">err = s.store.Competition().Delete(id)
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusInternalServerError, errDB)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">w.Header().Set("Content-type", "application/json")
+                s.respond(w, r, http.StatusOK, nil)</span>
+        }
+}
+
+func (s *server) handleNewsIndex() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                elems, err := s.store.News().GetAll()
+                if err != nil </span><span class="cov0" title="0">{
+                        s.error(w, r, http.StatusInternalServerError, err)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">err = s.tmpl.ExecuteTemplate(w, "indexNews.html", struct {
+                        Items []*model.News
+                }{
+                        Items: elems,
+                })
+                if err != nil </span><span class="cov0" title="0">{
+                        s.respond(w, r, http.StatusInternalServerError, errTemplateError)
+                        return
+                }</span>
+        }
+}
+
+func (s *server) handleCompetitionsIndex() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                elems, err := s.store.Competition().GetAll()
+                if err != nil </span><span class="cov0" title="0">{
+                        s.error(w, r, http.StatusInternalServerError, err)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">err = s.tmpl.ExecuteTemplate(w, "index.html", struct {
+                        Items []*model.Competition
+                }{
+                        Items: elems,
+                })
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(w, `Template errror`, http.StatusInternalServerError)
+                        return
+                }</span>
+        }
+}
+
+func (s *server) handleAthletsIndex() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                s.respond(w, r, http.StatusOK, "athlets")
+        }</span>
+}
+
+func (s *server) handleIndex() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                // _, err := session.SessionFromContext(r.Context())
+                // if err == nil {
+                //         http.Redirect(w, r, "/competitions", http.StatusFound)
+                //         return
+                // }
+
+                err := s.tmpl.ExecuteTemplate(w, "login.html", nil)
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(w, `Template errror`, http.StatusInternalServerError)
+                        return
+                }</span>
+        }
+}
+
+func (s *server) setRequestID(next http.Handler) http.Handler <span class="cov8" title="1">{
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) </span><span class="cov8" title="1">{
+                id := uuid.New().String()
+                w.Header().Set("X-Request-ID", id)
+                next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), ctxKeyRequestID, id)))
+        }</span>)
+}
+
+func (s *server) logRequest(next http.Handler) http.Handler <span class="cov8" title="1">{
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) </span><span class="cov8" title="1">{
+                logger := s.logger.WithFields(logrus.Fields{
+                        "remote_addr": r.RemoteAddr,
+                        "request_id":  r.Context().Value(ctxKeyRequestID),
+                })
+                logger.Infof("started %s %s", r.Method, r.RequestURI)
+
+                start := time.Now()
+                rw := &amp;responseWriter{w, http.StatusOK}
+                next.ServeHTTP(rw, r)
+
+                logger.Infof(
+                        "completed with %d %s in %v",
+                        rw.code,
+                        http.StatusText(rw.code),
+                        time.Now().Sub(start),
+                )
+        }</span>)
+}
+
+func (s *server) authenticateUser(next http.Handler) http.Handler <span class="cov8" title="1">{
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) </span><span class="cov8" title="1">{
+                session, err := s.sessionStore.Get(r, sessionName)
+                if err != nil </span><span class="cov0" title="0">{
+                        s.error(w, r, http.StatusInternalServerError, err)
+                        return
+                }</span>
+
+                <span class="cov8" title="1">id, ok := session.Values["user_id"]
+                if !ok </span><span class="cov8" title="1">{
+                        s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
+                        return
+                }</span>
+
+                <span class="cov8" title="1">u, err := s.store.User().Find(id.(int))
+                if err != nil </span><span class="cov0" title="0">{
+                        s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
+                        return
+                }</span>
+
+                <span class="cov8" title="1">next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), ctxKeyUser, u)))</span>
+        })
+}
+
+func (s *server) handleWhoami() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                s.respond(w, r, http.StatusOK, r.Context().Value(ctxKeyUser).(*model.User))
+        }</span>
+}
+
+func (s *server) handleUsersCreate() http.HandlerFunc <span class="cov8" title="1">{
+        type request struct {
+                Email    string `json:"email"`
+                Password string `json:"password"`
+        }
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov8" title="1">{
+                req := &amp;request{}
+
+                err := json.NewDecoder(r.Body).Decode(req)
+                if err != nil </span><span class="cov8" title="1">{
+                        s.error(w, r, http.StatusBadRequest, err)
+                        return
+                }</span>
+
+                <span class="cov8" title="1">u := &amp;model.User{
+                        Email:    req.Email,
+                        Password: req.Password,
+                }
+
+                err = s.store.User().Create(u)
+                if err != nil </span><span class="cov8" title="1">{
+                        s.error(w, r, http.StatusUnprocessableEntity, err)
+                        return
+                }</span>
+
+                <span class="cov8" title="1">u.Sanitaze()
+                s.respond(w, r, http.StatusCreated, u)</span>
+        }
+}
+
+func (s *server) handleLogin() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                // u, err := s.store.User().Authorize(r.FormValue("email"), r.FormValue("password"))
+                // if err == store.ErrNoUser {
+                //         s.respond(w, r, http.StatusBadRequest, store.ErrNoUser)
+                //         return
+                // }
+                // if err == store.ErrBadPassword {
+                //         s.respond(w, r, http.StatusBadRequest, errNotAuthenticated)
+                //         return
+                // }
+
+                // sess, _ := s.sessionManager.Create(w, u.ID)
+
+                // s.logger.Infof("created session for %v", sess.UserID)
+                http.Redirect(w, r, "/competitions", http.StatusFound)
+        }</span>
+}
+
+func (s *server) handleLogout() http.HandlerFunc <span class="cov8" title="1">{
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov0" title="0">{
+                // s.sessionManager.DestroyCurrent(w, r)
+                http.Redirect(w, r, "/", http.StatusFound)
+        }</span>
+}
+
+func (s *server) handleSessionCreate() http.HandlerFunc <span class="cov8" title="1">{
+        type request struct {
+                Email    string `json:"email"`
+                Password string `json:"password"`
+        }
+
+        return func(w http.ResponseWriter, r *http.Request) </span><span class="cov8" title="1">{
+                req := &amp;request{
+                        Email:    r.FormValue("email"),
+                        Password: r.FormValue("password"),
+                }
+                // err := json.NewDecoder(r.Body).Decode(req)
+                // if err != nil {
+                //         s.error(w, r, http.StatusBadRequest, err)
+                //         return
+                // }
+
+                u, err := s.store.User().FindByEmail(req.Email)
+                if err != nil || !u.ComparePassword(req.Password) </span><span class="cov8" title="1">{
+                        s.error(w, r, http.StatusUnauthorized, errIncorrectEmailOrPassword)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">session, err := s.sessionStore.Get(r, sessionName)
+                if err != nil </span><span class="cov0" title="0">{
+                        s.error(w, r, http.StatusInternalServerError, err)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">session.Values["user_id"] = u.ID
+                err = s.sessionStore.Save(r, w, session)
+                if err != nil </span><span class="cov0" title="0">{
+                        s.error(w, r, http.StatusInternalServerError, err)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">s.respond(w, r, http.StatusOK, nil)</span>
+        }
+}
+
+func (s *server) error(w http.ResponseWriter, r *http.Request, code int, err error) <span class="cov8" title="1">{
+        s.respond(w, r, code, map[string]string{"error": err.Error()})
+}</span>
+
+func (s *server) respond(w http.ResponseWriter, r *http.Request, code int, data interface{}) <span class="cov8" title="1">{
+        w.WriteHeader(code)
+        if data != nil </span><span class="cov8" title="1">{
+                json.NewEncoder(w).Encode(data)
         }</span>
 }
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package model
+		<pre class="file" id="file4" style="display: none">package model
 
-import "testing"
+import (
+        "testing"
+        "time"
+)
 
 func TestUser(t *testing.T) *User <span class="cov8" title="1">{
         return &amp;User{
@@ -195,9 +665,45 @@ func TestUser(t *testing.T) *User <span class="cov8" title="1">{
                 Password: "password",
         }
 }</span>
+
+func TestCompetition(t *testing.T) *Competition <span class="cov0" title="0">{
+        return &amp;Competition{
+                Name:        "example",
+                Date:        time.Now(),
+                AgeCategory: "juniors",
+                WeaponType:  "epee",
+                IsTeam:      0,
+                Status:      "Russian",
+                Sex:         "female",
+                Type:        "Tournament of Russia",
+        }
+}</span>
+
+func TestAthlet(t *testing.T) *Athlet <span class="cov0" title="0">{
+        return &amp;Athlet{
+                Name:       "Ololo Kekovich",
+                Birthday:   time.Now(),
+                Role:       "athlet",
+                WeaponType: "epee",
+                Sex:        "female",
+                RFSubject:  "Moscow",
+                Rank:       "Master of Sport",
+                SportOrg:   "DInamo",
+        }
+}</span>
+
+func TestBattle(t *testing.T) *Battle <span class="cov0" title="0">{
+        return &amp;Battle{
+                IDWinner:      1,
+                IDLooser:      2,
+                IDCompetition: 1,
+                WinnerScore:   15,
+                LooserScore:   11,
+        }
+}</span>
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package model
+		<pre class="file" id="file5" style="display: none">package model
 
 import (
         validation "github.com/go-ozzo/ozzo-validation"
@@ -206,10 +712,11 @@ import (
 )
 
 type User struct {
-        ID                int
-        Email             string
-        Password          string
-        EncryptedPassword string
+        ID                int    `json:"id"`
+        Email             string `json:"email"`
+        Password          string `json:"password,omitempty"`
+        EncryptedPassword string `json:"-"`
+        RoleID            int    `json:"role_id"`
 }
 
 func (u *User) Validate() error <span class="cov8" title="1">{
@@ -232,6 +739,14 @@ func (u *User) BeforeCreate() error <span class="cov8" title="1">{
         <span class="cov8" title="1">return nil</span>
 }
 
+func (u *User) Sanitaze() <span class="cov0" title="0">{
+        u.Password = ""
+}</span>
+
+func (u *User) ComparePassword(password string) bool <span class="cov0" title="0">{
+        return bcrypt.CompareHashAndPassword([]byte(u.EncryptedPassword), []byte(password)) == nil
+}</span>
+
 func encryptString(s string) (string, error) <span class="cov8" title="1">{
         b, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.MinCost)
         if err != nil </span><span class="cov0" title="0">{
@@ -242,7 +757,7 @@ func encryptString(s string) (string, error) <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package model
+		<pre class="file" id="file6" style="display: none">package model
 
 import validation "github.com/go-ozzo/ozzo-validation"
 
@@ -256,7 +771,247 @@ func requiredIf(cond bool) validation.RuleFunc <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package sqlstore
+		<pre class="file" id="file7" style="display: none">package mysqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+)
+
+type AthletRepository struct {
+        store *Store
+}
+
+func (r *AthletRepository) Create(a *model.Athlet) error <span class="cov0" title="0">{
+        return r.store.db.QueryRow(
+                "INSERT INTO battles (name, birthday, role_part, weapon_type, sex, rf_subject, sport_rank, sport_org) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+                a.Name,
+                a.Birthday,
+                a.Role,
+                a.WeaponType,
+                a.Sex,
+                a.RFSubject,
+                a.Rank,
+                a.SportOrg,
+        ).Scan(&amp;a.ID)
+}</span>
+
+func (r *AthletRepository) Find(id int) (*model.Athlet, error) <span class="cov0" title="0">{
+        a := &amp;model.Athlet{}
+        err := r.store.db.QueryRow(
+                "SELECT id, name, birthday, role_part, weapon_type, sex, rf_subject, sport_rank, sport_org FROM athlets WHERE id = $1",
+                id,
+        ).Scan(
+                &amp;a.ID,
+                &amp;a.Name,
+                &amp;a.Birthday,
+                &amp;a.Role,
+                &amp;a.WeaponType,
+                &amp;a.Sex,
+                &amp;a.RFSubject,
+                &amp;a.Rank,
+                &amp;a.SportOrg,
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+
+        <span class="cov0" title="0">return a, nil</span>
+}
+func (r *AthletRepository) FindByWeaponType(weapon string) ([]*model.Athlet, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *AthletRepository) FindBySex(sex int) ([]*model.Athlet, error)              <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *AthletRepository) FindByRFSubject(rfSubject string) ([]*model.Athlet, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *AthletRepository) FindByRank(rank string) ([]*model.Athlet, error) <span class="cov0" title="0">{ return nil, nil }</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package mysqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+)
+
+type BattleRepository struct {
+        store *Store
+}
+
+func (r *BattleRepository) Create(b *model.Battle) error <span class="cov0" title="0">{
+        return r.store.db.QueryRow(
+                "INSERT INTO battles (id_winner, id_looser, id_competiton, winner_score, looser_score) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+                b.IDWinner,
+                b.IDLooser,
+                b.IDCompetition,
+                b.WinnerScore,
+                b.LooserScore,
+        ).Scan(&amp;b.ID)
+}</span>
+
+func (r *BattleRepository) Find(id int) (*model.Battle, error) <span class="cov0" title="0">{
+        b := &amp;model.Battle{}
+        err := r.store.db.QueryRow(
+                "SELECT id, id_winner, id_looser, id_competition, winner_score, looser_score FROM battles WHERE id = $1",
+                id,
+        ).Scan(
+                &amp;b.ID,
+                &amp;b.IDWinner,
+                &amp;b.IDLooser,
+                &amp;b.IDCompetition,
+                &amp;b.WinnerScore,
+                &amp;b.LooserScore,
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+
+        <span class="cov0" title="0">return b, nil</span>
+}
+func (r *BattleRepository) FindByIDWinner(idWinner int) ([]*model.Battle, error)   <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *BattleRepository) FindByIDLooser(idLooser int) ([]*model.Battle, error)   <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *BattleRepository) FindByIDReferee(idReferee int) ([]*model.Battle, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *BattleRepository) FindByIDCompetition(idCompetition int) ([]*model.Battle, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package mysqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+
+        _ "github.com/go-sql-driver/mysql"
+)
+
+type CompetitionRepository struct {
+        store *Store
+}
+
+func (r *CompetitionRepository) Create(c *model.Competition) error <span class="cov8" title="1">{
+        res, err := r.store.db.Exec(
+                "INSERT INTO competitions (name, dt, age_category, weapon_type, is_team, status, sex, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                c.Name,
+                c.Date,
+                c.AgeCategory,
+                c.WeaponType,
+                c.IsTeam,
+                c.Status,
+                c.Sex,
+                c.Type,
+        )
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">newId, err := res.LastInsertId()
+        c.ID = int(newId)
+
+        return err</span>
+}
+func (r *CompetitionRepository) Find(id int) (*model.Competition, error) <span class="cov0" title="0">{
+        c := &amp;model.Competition{}
+        err := r.store.db.QueryRow(
+                "SELECT id, name, dt, age_category, weapon_type, is_team, status, sex, type FROM competitions WHERE id = ?",
+                id,
+        ).Scan(
+                &amp;c.ID,
+                &amp;c.Name,
+                &amp;c.Date,
+                &amp;c.AgeCategory,
+                &amp;c.WeaponType,
+                &amp;c.IsTeam,
+                &amp;c.Status,
+                &amp;c.Sex,
+                &amp;c.Type,
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+        <span class="cov0" title="0">return c, nil</span>
+}
+func (r *CompetitionRepository) GetAll() ([]*model.Competition, error) <span class="cov0" title="0">{
+        items := []*model.Competition{}
+        rows, err := r.store.db.Query("SELECT id, name, dt, age_category, weapon_type, is_team, status, sex, type FROM competitions;")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+        for rows.Next() </span><span class="cov0" title="0">{
+                post := &amp;model.Competition{}
+                err = rows.Scan(
+                        &amp;post.ID,
+                        &amp;post.Name,
+                        &amp;post.Date,
+                        &amp;post.AgeCategory,
+                        &amp;post.WeaponType,
+                        &amp;post.IsTeam,
+                        &amp;post.Status,
+                        &amp;post.Sex,
+                        &amp;post.Type,
+                )
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">items = append(items, post)</span>
+        }
+
+        <span class="cov0" title="0">return items, nil</span>
+}
+func (r *CompetitionRepository) Update(c *model.Competition) error                  <span class="cov0" title="0">{ return nil }</span>
+func (r *CompetitionRepository) Delete(id int) error                                <span class="cov0" title="0">{ return nil }</span>
+func (r *CompetitionRepository) FindBySex(sex string) ([]*model.Competition, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *CompetitionRepository) FindByType(t string) ([]*model.Competition, error)  <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *CompetitionRepository) FindByName(name string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByDate(dt string) ([]*model.Competition, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *CompetitionRepository) FindByAgeCategory(ageCategory string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByWeaponType(weaponType string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByIsTeam(isTeam bool) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByStatus(status string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package mysqlstore
+
+import "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+
+type NewsRepository struct {
+        store *Store
+}
+
+func (r *NewsRepository) Create(*model.News) error       <span class="cov0" title="0">{ return nil }</span>
+func (r *NewsRepository) Find(int) (*model.News, error)  <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *NewsRepository) GetAll() ([]*model.News, error) <span class="cov0" title="0">{ return nil, nil }</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package mysqlstore
 
 import (
         "database/sql"
@@ -266,8 +1021,12 @@ import (
 )
 
 type Store struct {
-        db             *sql.DB
-        userRepository *UserRepository
+        db                    *sql.DB
+        userRepository        *UserRepository
+        competitionRepository *CompetitionRepository
+        battleRepository      *BattleRepository
+        athletRepository      *AthletRepository
+        newsRepository        *NewsRepository
 }
 
 func New(db *sql.DB) *Store <span class="cov8" title="1">{
@@ -287,9 +1046,57 @@ func (s *Store) User() store.UserRepository <span class="cov8" title="1">{
 
         return s.userRepository</span>
 }
+
+func (s *Store) Competition() store.CompetitionRepository <span class="cov8" title="1">{
+        if s.competitionRepository != nil </span><span class="cov0" title="0">{
+                return s.competitionRepository
+        }</span>
+
+        <span class="cov8" title="1">s.competitionRepository = &amp;CompetitionRepository{
+                store: s,
+        }
+
+        return s.competitionRepository</span>
+}
+
+func (s *Store) Battle() store.BattleRepository <span class="cov0" title="0">{
+        if s.battleRepository != nil </span><span class="cov0" title="0">{
+                return s.battleRepository
+        }</span>
+
+        <span class="cov0" title="0">s.battleRepository = &amp;BattleRepository{
+                store: s,
+        }
+
+        return s.battleRepository</span>
+}
+
+func (s *Store) Athlet() store.AthletRepository <span class="cov0" title="0">{
+        if s.athletRepository != nil </span><span class="cov0" title="0">{
+                return s.athletRepository
+        }</span>
+
+        <span class="cov0" title="0">s.athletRepository = &amp;AthletRepository{
+                store: s,
+        }
+
+        return s.athletRepository</span>
+}
+
+func (s *Store) News() store.NewsRepository <span class="cov0" title="0">{
+        if s.newsRepository != nil </span><span class="cov0" title="0">{
+                return s.newsRepository
+        }</span>
+
+        <span class="cov0" title="0">s.newsRepository = &amp;NewsRepository{
+                store: s,
+        }
+
+        return s.newsRepository</span>
+}
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package sqlstore
+		<pre class="file" id="file12" style="display: none">package mysqlstore
 
 import (
         "database/sql"
@@ -298,10 +1105,519 @@ import (
         "testing"
 )
 
-func TestDB(t *testing.T, databaseURL string) (*sql.DB, func(...string)) <span class="cov8" title="1">{
+func TestDB(t *testing.T, database, databaseURL string) (*sql.DB, func(...string)) <span class="cov8" title="1">{
         t.Helper()
 
-        db, err := sql.Open("postgres", databaseURL)
+        db, err := sql.Open(database, databaseURL)
+        if err != nil </span><span class="cov0" title="0">{
+                t.Fatal(err)
+        }</span>
+
+        <span class="cov8" title="1">if err := db.Ping(); err != nil </span><span class="cov0" title="0">{
+                t.Fatal(err)
+        }</span>
+
+        <span class="cov8" title="1">return db, func(tables ...string) </span><span class="cov8" title="1">{
+                if len(tables) &gt; 0 </span><span class="cov8" title="1">{
+                        db.Exec(fmt.Sprintf("TRUNCATE table %s", strings.Join(tables, ", ")))
+                }</span>
+
+                <span class="cov8" title="1">db.Close()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package mysqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+)
+
+type UserRepository struct {
+        store *Store
+}
+
+func (r *UserRepository) Create(u *model.User) error <span class="cov8" title="1">{
+        if err := u.Validate(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if err := u.BeforeCreate(); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">res, err := r.store.db.Exec(
+                "INSERT INTO users (email, encrypted_password) VALUES (?, ?)",
+                u.Email,
+                u.EncryptedPassword,
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">newId, err := res.LastInsertId()
+        u.ID = int(newId)
+
+        return err</span>
+}
+
+func (r *UserRepository) FindByEmail(email string) (*model.User, error) <span class="cov8" title="1">{
+        u := &amp;model.User{}
+        err := r.store.db.QueryRow(
+                "SELECT id, email, encrypted_password FROM users WHERE email = ?",
+                email,
+        ).Scan(
+                &amp;u.ID,
+                &amp;u.Email,
+                &amp;u.EncryptedPassword,
+        )
+
+        if err != nil </span><span class="cov8" title="1">{
+                if err == sql.ErrNoRows </span><span class="cov8" title="1">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+
+        <span class="cov8" title="1">return u, nil</span>
+}
+
+func (r *UserRepository) Find(id int) (*model.User, error) <span class="cov8" title="1">{
+        u := &amp;model.User{}
+        err := r.store.db.QueryRow(
+                "SELECT id, email, encrypted_password FROM users WHERE id = ?",
+                id,
+        ).Scan(
+                &amp;u.ID,
+                &amp;u.Email,
+                &amp;u.EncryptedPassword,
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+
+        <span class="cov8" title="1">return u, nil</span>
+}
+
+func (r *UserRepository) Authorize(email, pass string) (*model.User, error) <span class="cov0" title="0">{ return nil, nil }</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package sqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+)
+
+type AthletRepository struct {
+        store *Store
+}
+
+func (r *AthletRepository) Create(a *model.Athlet) error <span class="cov0" title="0">{
+        return r.store.db.QueryRow(
+                "INSERT INTO battles (name, birthday, role_part, weapon_type, sex, rf_subject, sport_rank, sport_org) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+                a.Name,
+                a.Birthday,
+                a.Role,
+                a.WeaponType,
+                a.Sex,
+                a.RFSubject,
+                a.Rank,
+                a.SportOrg,
+        ).Scan(&amp;a.ID)
+}</span>
+
+func (r *AthletRepository) Find(id int) (*model.Athlet, error) <span class="cov0" title="0">{
+        a := &amp;model.Athlet{}
+        err := r.store.db.QueryRow(
+                "SELECT id, name, birthday, role_part, weapon_type, sex, rf_subject, sport_rank, sport_org FROM athlets WHERE id = $1",
+                id,
+        ).Scan(
+                &amp;a.ID,
+                &amp;a.Name,
+                &amp;a.Birthday,
+                &amp;a.Role,
+                &amp;a.WeaponType,
+                &amp;a.Sex,
+                &amp;a.RFSubject,
+                &amp;a.Rank,
+                &amp;a.SportOrg,
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+
+        <span class="cov0" title="0">return a, nil</span>
+}
+func (r *AthletRepository) FindByWeaponType(weapon string) ([]*model.Athlet, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *AthletRepository) FindBySex(sex int) ([]*model.Athlet, error)              <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *AthletRepository) FindByRFSubject(rfSubject string) ([]*model.Athlet, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *AthletRepository) FindByRank(rank string) ([]*model.Athlet, error) <span class="cov0" title="0">{ return nil, nil }</span>
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package sqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+)
+
+type BattleRepository struct {
+        store *Store
+}
+
+func (r *BattleRepository) Create(b *model.Battle) error <span class="cov0" title="0">{
+        return r.store.db.QueryRow(
+                "INSERT INTO battles (id_winner, id_looser, id_competiton, winner_score, looser_score) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+                b.IDWinner,
+                b.IDLooser,
+                b.IDCompetition,
+                b.WinnerScore,
+                b.LooserScore,
+        ).Scan(&amp;b.ID)
+}</span>
+
+func (r *BattleRepository) Find(id int) (*model.Battle, error) <span class="cov0" title="0">{
+        b := &amp;model.Battle{}
+        err := r.store.db.QueryRow(
+                "SELECT id, id_winner, id_looser, id_competition, winner_score, looser_score FROM battles WHERE id = $1",
+                id,
+        ).Scan(
+                &amp;b.ID,
+                &amp;b.IDWinner,
+                &amp;b.IDLooser,
+                &amp;b.IDCompetition,
+                &amp;b.WinnerScore,
+                &amp;b.LooserScore,
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+
+        <span class="cov0" title="0">return b, nil</span>
+}
+func (r *BattleRepository) FindByIDWinner(idWinner int) ([]*model.Battle, error)   <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *BattleRepository) FindByIDLooser(idLooser int) ([]*model.Battle, error)   <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *BattleRepository) FindByIDReferee(idReferee int) ([]*model.Battle, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *BattleRepository) FindByIDCompetition(idCompetition int) ([]*model.Battle, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package sqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+)
+
+type CompetitionRepository struct {
+        store *Store
+}
+
+func (r *CompetitionRepository) Create(c *model.Competition) error <span class="cov8" title="1">{
+        return r.store.db.QueryRow(
+                "INSERT INTO competitions (name, dt, age_category, weapon_type, is_team, status, sex, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+                c.Name,
+                c.Date,
+                c.AgeCategory,
+                c.WeaponType,
+                c.IsTeam,
+                c.Status,
+                c.Sex,
+                c.Type,
+        ).Scan(&amp;c.ID)
+}</span>
+func (r *CompetitionRepository) Find(id int) (*model.Competition, error) <span class="cov8" title="1">{
+        c := &amp;model.Competition{}
+        err := r.store.db.QueryRow(
+                "SELECT id, name, dt, age_category, weapon_type, is_team, status, sex, type FROM competitions WHERE id = $1",
+                id,
+        ).Scan(
+                &amp;c.ID,
+                &amp;c.Name,
+                &amp;c.Date,
+                &amp;c.AgeCategory,
+                &amp;c.WeaponType,
+                &amp;c.IsTeam,
+                &amp;c.Status,
+                &amp;c.Sex,
+                &amp;c.Type,
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+        <span class="cov8" title="1">return c, nil</span>
+}
+
+func (r *CompetitionRepository) GetAll() ([]*model.Competition, error) <span class="cov0" title="0">{
+        items := []*model.Competition{}
+        rows, err := r.store.db.Query(
+                "SELECT id, name, dt, age_category, weapon_type, is_team, status, sex, type FROM competitions;")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+        for rows.Next() </span><span class="cov0" title="0">{
+                post := &amp;model.Competition{}
+                err = rows.Scan(
+                        &amp;post.ID,
+                        &amp;post.Name,
+                        &amp;post.Date,
+                        &amp;post.AgeCategory,
+                        &amp;post.WeaponType,
+                        &amp;post.IsTeam,
+                        &amp;post.Status,
+                        &amp;post.Sex,
+                        &amp;post.Type,
+                )
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">items = append(items, post)</span>
+        }
+
+        <span class="cov0" title="0">return items, nil</span>
+}
+func (r *CompetitionRepository) Update(c *model.Competition) error <span class="cov8" title="1">{
+        // return r.store.db.QueryRow(
+        //         "UPDATE competitions SET name = $2, dt = $3, age_category = $4, weapon_type = $5, is_team = $6, status = $7, sex = $8, type = $9 WHERE id = $1"+
+        //                 "RETURNING id, name, dt, age_category, weapon_type, is_team, status, sex, type;",
+        //         c.ID, c.Name, c.Date, c.AgeCategory, c.WeaponType, c.IsTeam, c.Status, c.Sex, c.Type,
+        // ).Scan(
+        //         &amp;c.ID, &amp;c.Name, &amp;c.Date, &amp;c.AgeCategory, &amp;c.WeaponType, &amp;c.IsTeam, &amp;c.Status, &amp;c.Sex, &amp;c.Type,
+        // )
+        _, err := r.store.db.Exec(
+                "UPDATE competitions SET name = $2, dt = $3, age_category = $4, weapon_type = $5, is_team = $6, status = $7, sex = $8, type = $9 WHERE id = $1;",
+                c.ID,
+                c.Name,
+                c.Date,
+                c.AgeCategory,
+                c.WeaponType,
+                c.IsTeam,
+                c.Status,
+                c.Sex,
+                c.Type,
+        )
+
+        return err
+}</span>
+
+func (r *CompetitionRepository) Delete(id int) error <span class="cov8" title="1">{
+        _, err := r.store.db.Exec("DELETE FROM competitions WHERE id = $1;", id)
+        return err
+}</span>
+
+func (r *CompetitionRepository) FindBySex(sex string) ([]*model.Competition, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *CompetitionRepository) FindByType(t string) ([]*model.Competition, error)  <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *CompetitionRepository) FindByName(name string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByDate(dt string) ([]*model.Competition, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *CompetitionRepository) FindByAgeCategory(ageCategory string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByWeaponType(weaponType string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByIsTeam(isTeam bool) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByStatus(status string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package sqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+)
+
+type NewsRepository struct {
+        store *Store
+}
+
+func (r *NewsRepository) Create(n *model.News) error <span class="cov0" title="0">{
+        return r.store.db.QueryRow(
+                "INSERT INTO news (title, description) VALUES ($1, $2) RETURNING id",
+                n.Title,
+                n.Description,
+        ).Scan(&amp;n.ID)
+}</span>
+func (r *NewsRepository) Find(id int) (*model.News, error) <span class="cov0" title="0">{
+        n := &amp;model.News{}
+        err := r.store.db.QueryRow(
+                "SELECT title, description FROM news WHERE id = $1",
+                id,
+        ).Scan(
+                &amp;n.ID,
+                &amp;n.Title,
+                &amp;n.Description,
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+        <span class="cov0" title="0">return n, nil</span>
+}
+func (r *NewsRepository) GetAll() ([]*model.News, error) <span class="cov0" title="0">{
+        items := []*model.News{}
+        rows, err := r.store.db.Query("SELECT id, title, description FROM news")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer rows.Close()
+
+        for rows.Next() </span><span class="cov0" title="0">{
+                post := &amp;model.News{}
+                err = rows.Scan(
+                        &amp;post.ID,
+                        &amp;post.Title,
+                        &amp;post.Description,
+                )
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">items = append(items, post)</span>
+        }
+
+        <span class="cov0" title="0">return items, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package sqlstore
+
+import (
+        "database/sql"
+
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/store"
+        _ "github.com/lib/pq"
+)
+
+type Store struct {
+        db                    *sql.DB
+        userRepository        *UserRepository
+        competitionRepository *CompetitionRepository
+        battleRepository      *BattleRepository
+        athletRepository      *AthletRepository
+        newsRepository        *NewsRepository
+}
+
+func New(db *sql.DB) *Store <span class="cov8" title="1">{
+        return &amp;Store{
+                db: db,
+        }
+}</span>
+
+func (s *Store) User() store.UserRepository <span class="cov8" title="1">{
+        if s.userRepository != nil </span><span class="cov8" title="1">{
+                return s.userRepository
+        }</span>
+
+        <span class="cov8" title="1">s.userRepository = &amp;UserRepository{
+                store: s,
+        }
+
+        return s.userRepository</span>
+}
+
+func (s *Store) Competition() store.CompetitionRepository <span class="cov8" title="1">{
+        if s.competitionRepository != nil </span><span class="cov8" title="1">{
+                return s.competitionRepository
+        }</span>
+
+        <span class="cov8" title="1">s.competitionRepository = &amp;CompetitionRepository{
+                store: s,
+        }
+
+        return s.competitionRepository</span>
+}
+
+func (s *Store) Battle() store.BattleRepository <span class="cov0" title="0">{
+        if s.battleRepository != nil </span><span class="cov0" title="0">{
+                return s.battleRepository
+        }</span>
+
+        <span class="cov0" title="0">s.battleRepository = &amp;BattleRepository{
+                store: s,
+        }
+
+        return s.battleRepository</span>
+}
+
+func (s *Store) Athlet() store.AthletRepository <span class="cov0" title="0">{
+        if s.athletRepository != nil </span><span class="cov0" title="0">{
+                return s.athletRepository
+        }</span>
+
+        <span class="cov0" title="0">s.athletRepository = &amp;AthletRepository{
+                store: s,
+        }
+
+        return s.athletRepository</span>
+}
+
+func (s *Store) News() store.NewsRepository <span class="cov0" title="0">{
+        if s.newsRepository != nil </span><span class="cov0" title="0">{
+                return s.newsRepository
+        }</span>
+
+        <span class="cov0" title="0">s.newsRepository = &amp;NewsRepository{
+                store: s,
+        }
+
+        return s.newsRepository</span>
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package sqlstore
+
+import (
+        "database/sql"
+        "fmt"
+        "strings"
+        "testing"
+)
+
+func TestDB(t *testing.T, database, databaseURL string) (*sql.DB, func(...string)) <span class="cov8" title="1">{
+        t.Helper()
+
+        db, err := sql.Open(database, databaseURL)
         if err != nil </span><span class="cov0" title="0">{
                 t.Fatal(err)
         }</span>
@@ -320,7 +1636,7 @@ func TestDB(t *testing.T, databaseURL string) (*sql.DB, func(...string)) <span c
 }
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package sqlstore
+		<pre class="file" id="file20" style="display: none">package sqlstore
 
 import (
         "database/sql"
@@ -369,9 +1685,131 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) <span cl
 
         <span class="cov8" title="1">return u, nil</span>
 }
+
+func (r *UserRepository) Find(id int) (*model.User, error) <span class="cov8" title="1">{
+        u := &amp;model.User{}
+        err := r.store.db.QueryRow(
+                "SELECT id, email, encrypted_password FROM users WHERE id = $1",
+                id,
+        ).Scan(
+                &amp;u.ID,
+                &amp;u.Email,
+                &amp;u.EncryptedPassword,
+        )
+
+        if err != nil </span><span class="cov0" title="0">{
+                if err == sql.ErrNoRows </span><span class="cov0" title="0">{
+                        return nil, store.ErrRecordNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+
+        <span class="cov8" title="1">return u, nil</span>
+}
+
+func (r *UserRepository) Authorize(email, pass string) (*model.User, error) <span class="cov0" title="0">{
+        u, err := r.FindByEmail(email)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, store.ErrNoUser
+        }</span>
+
+        <span class="cov0" title="0">if !u.ComparePassword(pass) </span><span class="cov0" title="0">{
+                return nil, store.ErrBadPassword
+        }</span>
+
+        <span class="cov0" title="0">return nil, nil</span>
+}
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">package teststore
+		<pre class="file" id="file21" style="display: none">package teststore
+
+import "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+
+type AthletRepository struct {
+        store   *Store
+        athlets map[int]*model.Athlet
+}
+
+func (r *AthletRepository) Create(a *model.Athlet) error                            <span class="cov0" title="0">{ return nil }</span>
+func (r *AthletRepository) Find(int) (*model.Athlet, error)                         <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *AthletRepository) FindByWeaponType(weapon string) ([]*model.Athlet, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *AthletRepository) FindBySex(sex int) ([]*model.Athlet, error)              <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *AthletRepository) FindByRFSubject(rfSubject string) ([]*model.Athlet, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *AthletRepository) FindByRank(rank string) ([]*model.Athlet, error) <span class="cov0" title="0">{ return nil, nil }</span>
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package teststore
+
+import (
+        "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+)
+
+type BattleRepository struct {
+        store   *Store
+        battles map[int]*model.Battle
+}
+
+func (r *BattleRepository) Create(b *model.Battle) error                           <span class="cov0" title="0">{ return nil }</span>
+func (r *BattleRepository) Find(id int) (*model.Battle, error)                     <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *BattleRepository) FindByIDWinner(idWinner int) ([]*model.Battle, error)   <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *BattleRepository) FindByIDLooser(idLooser int) ([]*model.Battle, error)   <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *BattleRepository) FindByIDReferee(idReferee int) ([]*model.Battle, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *BattleRepository) FindByIDCompetition(idCompetition int) ([]*model.Battle, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file23" style="display: none">package teststore
+
+import "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+
+type CompetitionRepository struct {
+        store        *Store
+        competitions map[int]*model.Competition
+}
+
+func (r *CompetitionRepository) Create(c *model.Competition) error       <span class="cov0" title="0">{ return nil }</span>
+func (r *CompetitionRepository) GetAll() ([]*model.Competition, error)   <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *CompetitionRepository) Update(*model.Competition) error         <span class="cov0" title="0">{ return nil }</span>
+func (r *CompetitionRepository) Delete(id int) error                     <span class="cov0" title="0">{ return nil }</span>
+func (r *CompetitionRepository) Find(id int) (*model.Competition, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *CompetitionRepository) FindByName(name string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByDate(dt string) ([]*model.Competition, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *CompetitionRepository) FindByAgeCategory(ageCategory string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByWeaponType(weaponType string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByIsTeam(isTeam bool) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindByStatus(status string) ([]*model.Competition, error) <span class="cov0" title="0">{
+        return nil, nil
+}</span>
+func (r *CompetitionRepository) FindBySex(sex string) ([]*model.Competition, error) <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *CompetitionRepository) FindByType(t string) ([]*model.Competition, error)  <span class="cov0" title="0">{ return nil, nil }</span>
+</pre>
+		
+		<pre class="file" id="file24" style="display: none">package teststore
+
+import "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
+
+type NewsRepository struct {
+        store *Store
+        news  map[int]*model.News
+}
+
+func (r *NewsRepository) Create(*model.News) error       <span class="cov0" title="0">{ return nil }</span>
+func (r *NewsRepository) Find(int) (*model.News, error)  <span class="cov0" title="0">{ return nil, nil }</span>
+func (r *NewsRepository) GetAll() ([]*model.News, error) <span class="cov0" title="0">{ return nil, nil }</span>
+</pre>
+		
+		<pre class="file" id="file25" style="display: none">package teststore
 
 import (
         "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
@@ -379,7 +1817,11 @@ import (
 )
 
 type Store struct {
-        userRepository *UserRepository
+        userRepository        *UserRepository
+        competitionRepository *CompetitionRepository
+        battleRepository      *BattleRepository
+        athletRepository      *AthletRepository
+        newsRepository        *NewsRepository
 }
 
 func New() *Store <span class="cov8" title="1">{
@@ -393,14 +1835,65 @@ func (s *Store) User() store.UserRepository <span class="cov8" title="1">{
 
         <span class="cov8" title="1">s.userRepository = &amp;UserRepository{
                 store: s,
-                users: make(map[string]*model.User),
+                users: make(map[int]*model.User),
         }
 
         return s.userRepository</span>
 }
+
+func (s *Store) Competition() store.CompetitionRepository <span class="cov0" title="0">{
+        if s.competitionRepository != nil </span><span class="cov0" title="0">{
+                return s.competitionRepository
+        }</span>
+
+        <span class="cov0" title="0">s.competitionRepository = &amp;CompetitionRepository{
+                store:        s,
+                competitions: make(map[int]*model.Competition),
+        }
+
+        return s.competitionRepository</span>
+}
+
+func (s *Store) Battle() store.BattleRepository <span class="cov0" title="0">{
+        if s.battleRepository != nil </span><span class="cov0" title="0">{
+                return s.battleRepository
+        }</span>
+
+        <span class="cov0" title="0">s.battleRepository = &amp;BattleRepository{
+                store:   s,
+                battles: make(map[int]*model.Battle),
+        }
+
+        return s.battleRepository</span>
+}
+
+func (s *Store) Athlet() store.AthletRepository <span class="cov0" title="0">{
+        if s.athletRepository != nil </span><span class="cov0" title="0">{
+                return s.athletRepository
+        }</span>
+
+        <span class="cov0" title="0">s.athletRepository = &amp;AthletRepository{
+                store:   s,
+                athlets: make(map[int]*model.Athlet),
+        }
+
+        return s.athletRepository</span>
+}
+
+func (s *Store) News() store.NewsRepository <span class="cov0" title="0">{
+        if s.newsRepository != nil </span><span class="cov0" title="0">{
+                return s.newsRepository
+        }</span>
+
+        <span class="cov0" title="0">s.newsRepository = &amp;NewsRepository{
+                store: s,
+        }
+
+        return s.newsRepository</span>
+}
 </pre>
 		
-		<pre class="file" id="file10" style="display: none">package teststore
+		<pre class="file" id="file26" style="display: none">package teststore
 
 import (
         "github.com/ArdentK/bmstu-6sem-ppo/internal/app/model"
@@ -409,7 +1902,7 @@ import (
 
 type UserRepository struct {
         store *Store
-        users map[string]*model.User
+        users map[int]*model.User
 }
 
 func (r *UserRepository) Create(u *model.User) error <span class="cov8" title="1">{
@@ -421,20 +1914,31 @@ func (r *UserRepository) Create(u *model.User) error <span class="cov8" title="1
                 return err
         }</span>
 
-        <span class="cov8" title="1">r.users[u.Email] = u
-        u.ID = len(r.users)
+        <span class="cov8" title="1">u.ID = len(r.users) + 1
+        r.users[u.ID] = u
 
         return nil</span>
 }
 
 func (r *UserRepository) FindByEmail(email string) (*model.User, error) <span class="cov8" title="1">{
-        u, ok := r.users[email]
-        if !ok </span><span class="cov8" title="1">{
+        for _, u := range r.users </span><span class="cov8" title="1">{
+                if u.Email == email </span><span class="cov8" title="1">{
+                        return u, nil
+                }</span>
+        }
+        <span class="cov8" title="1">return nil, store.ErrRecordNotFound</span>
+}
+
+func (r *UserRepository) Find(id int) (*model.User, error) <span class="cov8" title="1">{
+        u, ok := r.users[id]
+        if !ok </span><span class="cov0" title="0">{
                 return nil, store.ErrRecordNotFound
         }</span>
 
         <span class="cov8" title="1">return u, nil</span>
 }
+
+func (r *UserRepository) Authorize(email, pass string) (*model.User, error) <span class="cov0" title="0">{ return nil, nil }</span>
 </pre>
 		
 		</div>

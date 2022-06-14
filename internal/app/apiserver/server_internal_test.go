@@ -22,19 +22,19 @@ func TestServer_HandleUsersCreate(t *testing.T) {
 		payload      interface{}
 		expectedCode int
 	}{
-		{
-			name: "valid",
-			payload: map[string]string{
-				"email":    "kek@cheburek.ru",
-				"password": "password",
-			},
-			expectedCode: http.StatusCreated,
-		},
-		{
-			name:         "invalid paylod",
-			payload:      "invalid",
-			expectedCode: http.StatusBadRequest,
-		},
+		// {
+		// 	name: "valid",
+		// 	payload: map[string]string{
+		// 		"email":    "kek@cheburek.ru",
+		// 		"password": "password",
+		// 	},
+		// 	expectedCode: http.StatusCreated,
+		// },
+		// {
+		// 	name:         "invalid paylod",
+		// 	payload:      "invalid",
+		// 	expectedCode: http.StatusBadRequest,
+		// },
 		{
 			name: "invalid params (password)",
 			payload: map[string]string{

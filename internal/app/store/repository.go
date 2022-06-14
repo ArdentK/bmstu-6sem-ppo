@@ -6,6 +6,7 @@ type UserRepository interface {
 	Create(*model.User) error
 	Find(int) (*model.User, error)
 	FindByEmail(string) (*model.User, error)
+	Authorize(string, string) (*model.User, error)
 }
 
 type CompetitionRepository interface {
@@ -46,4 +47,6 @@ type NewsRepository interface {
 	Create(*model.News) error
 	Find(int) (*model.News, error)
 	GetAll() ([]*model.News, error)
+	Update(*model.News) error
+	Delete(int) error
 }

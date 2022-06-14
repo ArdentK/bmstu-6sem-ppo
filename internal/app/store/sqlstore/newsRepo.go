@@ -21,7 +21,7 @@ func (r *NewsRepository) Create(n *model.News) error {
 func (r *NewsRepository) Find(id int) (*model.News, error) {
 	n := &model.News{}
 	err := r.store.db.QueryRow(
-		"SELECT title, description FROM news WHERE id = $1",
+		"SELECT id, title, description FROM news WHERE id = $1",
 		id,
 	).Scan(
 		&n.ID,
@@ -59,4 +59,18 @@ func (r *NewsRepository) GetAll() ([]*model.News, error) {
 	}
 
 	return items, nil
+}
+
+func (r *NewsRepository) Update(n *model.News) error {
+	_, err := r.store.db.Exec(
+		"UPDATE news SET title = $2, description = $3 WHERE id = $1;",
+		n.ID,
+		n.Title,
+		n.Description,
+	)
+	return err
+}
+func (r *NewsRepository) Delete(id int) error {
+	_, err := r.store.db.Exec("DELETE FROM news WHERE id = $1;", id)
+	return err
 }

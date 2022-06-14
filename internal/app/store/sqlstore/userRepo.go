@@ -68,3 +68,16 @@ func (r *UserRepository) Find(id int) (*model.User, error) {
 
 	return u, nil
 }
+
+func (r *UserRepository) Authorize(email, pass string) (*model.User, error) {
+	u, err := r.FindByEmail(email)
+	if err != nil {
+		return nil, store.ErrNoUser
+	}
+
+	if !u.ComparePassword(pass) {
+		return nil, store.ErrBadPassword
+	}
+
+	return nil, nil
+}
